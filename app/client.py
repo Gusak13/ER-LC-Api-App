@@ -78,6 +78,13 @@ class ERLCClient:
     def get_server(self) -> dict[str, Any]:
         return self._request("GET", "/v2/server")
 
+    def get_players(self) -> dict[str, Any]:
+        return self._request(
+            "GET",
+            "/v2/server",
+            params={"Players": "true"},
+        )
+
     def run_command(self, command: str) -> dict[str, Any]:
         return self._request(
             "POST",

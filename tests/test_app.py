@@ -40,6 +40,14 @@ def test_index_renders_development_page() -> None:
     assert 'id="command-form"' in response.text
 
 
+def test_players_page_renders_players_view() -> None:
+    with TestClient(app) as client:
+        response = client.get("/players")
+
+    assert response.status_code == 200
+    assert 'id="players-list"' in response.text
+
+
 def test_server_endpoint_exposes_only_safe_summary() -> None:
     class FakeClient:
         def get_server(self) -> dict:
@@ -63,4 +71,38 @@ def test_server_endpoint_exposes_only_safe_summary() -> None:
         "max_players": 40,
         "account_verification": "Email",
         "team_balance": True,
+    }
+
+
+def test_players_endpoint_returns_player_summaries() -> None:
+    class FakeClient:
+        def get_players(self) -> dict:
+            return {
+                "Players": [
+                    {
+                        "Player": "DeputyNova:123456789",
+                        "Team": "Sheriff",
+                        "Permission": "Admin",
+                        "Callsign": "S-12",
+                        "WantedStars": 0,
+                    }
+                ]
+            }
+
+    with TestClient(app) as client:
+        app.state.erlc_client = FakeClient()
+        response = client.get("/api/players")
+
+    assert response.status_code == 200
+    assert response.json() == {
+        "players": [
+            {
+                "username": "DeputyNova",
+                "roblox_id": 123456789,
+                "team": "Sheriff",
+                "permission": "Admin",
+                "callsign": "S-12",
+                "wanted_stars": 0,
+            }
+        ]
     }

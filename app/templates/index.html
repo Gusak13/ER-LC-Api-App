@@ -4,31 +4,146 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>{{ app_name }} · ER:LC</title>
-  <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', path='/css/styles.css') }}"
+  >
 </head>
 
 <body>
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <div>
+        <br>
+        <br>
+        <p class="sidebar-eyebrow">ER:LC</p>
+        <h2>Control Panel</h2>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a
+        href="/"
+        class="sidebar-link{% if active_page == 'dashboard' %} active{% endif %}"
+      >
+        <span class="sidebar-icon">⌂</span>
+        Dashboard
+      </a>
+
+      <a
+        href="/players"
+        class="sidebar-link{% if active_page == 'players' %} active{% endif %}"
+      >
+        <span class="sidebar-icon">♟</span>
+        Players
+      </a>
+
+      <a href="/#command-panel" class="sidebar-link">
+        <span class="sidebar-icon">›_</span>
+        Commands
+      </a>
+    </nav>
+  </aside>
+
+  <button
+    id="sidebar-toggle"
+    class="sidebar-toggle"
+    type="button"
+    aria-label="Open navigation"
+    aria-controls="sidebar"
+    aria-expanded="false"
+  >
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+
   <main class="dashboard">
     <header class="header">
       <div>
         <p class="eyebrow">ER:LC private server</p>
-        <h1>Server Control</h1>
+        <h1>{% if active_page == "players" %}Players{% else %}Server Control{% endif %}</h1>
       </div>
-      <div class="status" id="api-status" role="status" aria-live="polite">
+
+      <div
+        class="status"
+        id="api-status"
+        role="status"
+        aria-live="polite"
+      >
         <span class="status-dot"></span>
         <span id="status-text">Connecting...</span>
       </div>
     </header>
 
+    {% if active_page == "players" %}
+    <section class="players-card" aria-labelledby="players-heading">
+      <div class="section-heading players-heading">
+        <div>
+          <p class="label">Live server roster</p>
+          <h2 id="players-heading">Players</h2>
+          <p class="players-summary" id="players-summary">Loading players...</p>
+        </div>
+
+        <button type="button" id="refresh-players-button" class="secondary-button">
+          Refresh
+        </button>
+      </div>
+
+      <div id="players-list" class="players-list" aria-live="polite">
+        <p class="players-empty">Loading players...</p>
+      </div>
+    </section>
+
+    <dialog id="moderation-dialog" class="moderation-dialog" aria-labelledby="moderation-title">
+      <form id="moderation-form" class="moderation-form">
+        <div class="moderation-heading">
+          <div>
+            <p class="label">Player moderation</p>
+            <h2 id="moderation-title">Moderate player</h2>
+          </div>
+          <button type="button" id="moderation-cancel-button" class="dialog-close" aria-label="Close moderation dialog">×</button>
+        </div>
+
+        <p id="moderation-player" class="moderation-player"></p>
+
+        <label for="moderation-reason">Reason <span>(optional)</span></label>
+        <input
+          id="moderation-reason"
+          name="reason"
+          type="text"
+          maxlength="120"
+          placeholder="Reason shown in the command"
+          autocomplete="off"
+        >
+
+        <p id="moderation-result" class="command-result" role="status" aria-live="polite"></p>
+
+        <div class="moderation-actions">
+          <button type="button" id="moderation-close-button" class="secondary-button">Cancel</button>
+          <button type="submit" id="moderation-submit-button" class="danger-button">Confirm</button>
+        </div>
+      </form>
+    </dialog>
+    {% else %}
     <section class="server-card">
       <div class="server-info">
         <p class="label">Server name</p>
         <h2 id="server-name">Loading...</h2>
-        <p class="server-meta" id="server-meta">Fetching current server details</p>
+
+        <p class="server-meta" id="server-meta">
+          Fetching current server details
+        </p>
       </div>
+
       <div class="player-count">
         <p class="label">Players</p>
+
         <div class="player-numbers">
           <span id="current-players">--</span>
           <span class="separator">/</span>
@@ -37,13 +152,18 @@
       </div>
     </section>
 
-    <section class="command-card">
+    <section class="command-card" id="command-panel">
       <div class="section-heading">
         <div>
           <p class="label">Virtual server management</p>
           <h2>Run command</h2>
         </div>
-        <button type="button" id="refresh-button" class="secondary-button">
+
+        <button
+          type="button"
+          id="refresh-button"
+          class="secondary-button"
+        >
           <span aria-hidden="true">↻</span>
           Refresh
         </button>
@@ -51,16 +171,34 @@
 
       <form id="command-form">
         <label for="command-input">Command</label>
+
         <div class="command-row">
-          <input id="command-input" name="command" type="text" placeholder=":h Hello everyone!" autocomplete="off"
-            spellcheck="false" required>
-          <button id="command-button" type="submit">Run</button>
+          <input
+            id="command-input"
+            name="command"
+            type="text"
+            placeholder=":h Hello everyone!"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          >
+
+          <button id="command-button" type="submit">
+            Run
+          </button>
         </div>
       </form>
 
-      <p id="command-result" class="command-result" role="status" aria-live="polite"></p>
+      <p
+        id="command-result"
+        class="command-result"
+        role="status"
+        aria-live="polite"
+      ></p>
     </section>
+    {% endif %}
   </main>
+
   <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
 

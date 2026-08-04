@@ -9,6 +9,7 @@ from fastapi.templating import Jinja2Templates
 from app.client import ERLCClient
 from app.config import PROJECT_ROOT, get_settings
 from app.routes.commands import router as commands_router
+from app.routes.players import router as players_router
 from app.routes.server import router as server_router
 from app.services.command_service import CommandService
 
@@ -33,6 +34,7 @@ app.mount(
 )
 app.include_router(server_router)
 app.include_router(commands_router)
+app.include_router(players_router)
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -40,7 +42,16 @@ def index(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(
         request=request,
         name="index.html",
-        context={"app_name": get_settings().app_name},
+        context={"app_name": get_settings().app_name, "active_page": "dashboard"},
+    )
+
+
+@app.get("/players", response_class=HTMLResponse, include_in_schema=False)
+def players_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"app_name": get_settings().app_name, "active_page": "players"},
     )
 
 

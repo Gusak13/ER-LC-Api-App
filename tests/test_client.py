@@ -36,6 +36,18 @@ def test_get_server_builds_v2_request() -> None:
     assert session.headers["server-key"] == "secret"
 
 
+def test_get_players_requests_v2_players_expansion() -> None:
+    session = FakeSession(FakeResponse(200, {"Players": []}))
+    client = ERLCClient("secret", session=session)
+
+    assert client.get_players() == {"Players": []}
+    assert session.last_request == (
+        "GET",
+        "https://api.erlc.gg/v2/server",
+        {"timeout": 20, "params": {"Players": "true"}},
+    )
+
+
 def test_run_command_posts_json_once() -> None:
     session = FakeSession(FakeResponse(200, {"message": "Success"}))
     client = ERLCClient("secret", session=session)

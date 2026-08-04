@@ -49,6 +49,7 @@ port 8000 through your router or use this unauthenticated app on public Wi-Fi.
 
 - `GET /health`: local application health.
 - `GET /api/server`: safe server summary without the server or join keys.
+- `GET /api/players`: current player summaries from the ER:LC v2 `Players` expansion.
 - `POST /api/commands`: sends an ER:LC command.
 
 All commands are enabled by default. Use a comma-separated list to restrict the

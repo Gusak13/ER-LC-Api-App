@@ -11,6 +11,9 @@ const commandForm = document.querySelector("#command-form");
 const commandInput = document.querySelector("#command-input");
 const commandButton = document.querySelector("#command-button");
 const commandResult = document.querySelector("#command-result");
+const sidebar = document.querySelector("#sidebar");
+const sidebarToggle = document.querySelector("#sidebar-toggle");
+const sidebarOverlay = document.querySelector("#sidebar-overlay");
 
 function setConnectionStatus(state, text) {
     statusElement.classList.remove("online", "offline");
@@ -22,6 +25,19 @@ function getErrorMessage(payload, fallback) {
     if (typeof payload?.detail === "string") return payload.detail;
     if (typeof payload?.message === "string") return payload.message;
     return fallback;
+}
+
+function setSidebar(open) {
+    sidebar.classList.toggle("open", open);
+    sidebarToggle.classList.toggle("open", open);
+    sidebarOverlay.classList.toggle("visible", open);
+    document.body.classList.toggle("sidebar-open", open);
+
+    sidebarToggle.setAttribute("aria-expanded", String(open));
+    sidebarToggle.setAttribute(
+        "aria-label",
+        open ? "Close navigation" : "Open navigation"
+    );
 }
 
 async function loadServer() {
@@ -100,4 +116,16 @@ async function submitCommand(event) {
 
 refreshButton.addEventListener("click", loadServer);
 commandForm.addEventListener("submit", submitCommand);
+sidebarToggle.addEventListener("click", () => {
+    const isOpen = sidebar.classList.contains("open");
+    setSidebar(!isOpen);
+});
+sidebarOverlay.addEventListener("click", () => {
+    setSidebar(false);
+});
+document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") {
+        setSidebar(false);
+    }
+});
 loadServer();
