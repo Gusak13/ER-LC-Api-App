@@ -27,7 +27,8 @@ def test_index_renders_development_page() -> None:
         response = client.get("/")
 
     assert response.status_code == 200
-    assert "ER:LC Control Panel" in response.text
+    assert "Server Control" in response.text
+    assert 'id="command-form"' in response.text
 
 
 def test_server_endpoint_exposes_only_safe_summary() -> None:
