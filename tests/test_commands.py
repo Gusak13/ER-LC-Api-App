@@ -27,6 +27,15 @@ def test_command_service_executes_allowlisted_command() -> None:
     assert client.commands == [":h Hello"]
 
 
+def test_command_service_wildcard_allows_any_command() -> None:
+    client = FakeClient()
+    service = CommandService(client, frozenset({"*"}))
+
+    assert service.execute(":kill Player") == {"message": "Success"}
+    assert service.execute(":time 12:00") == {"message": "Success"}
+    assert client.commands == [":kill Player", ":time 12:00"]
+
+
 def test_command_service_rejects_non_allowlisted_command() -> None:
     client = FakeClient()
     service = CommandService(client, frozenset({"h"}))

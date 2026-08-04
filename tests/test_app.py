@@ -22,6 +22,15 @@ def test_health_endpoint() -> None:
     assert response.json() == {"status": "ok"}
 
 
+def test_default_command_allowlist_enables_all(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("COMMAND_ALLOWLIST")
+    get_settings.cache_clear()
+
+    assert get_settings().command_allowlist == frozenset({"*"})
+
+
 def test_index_renders_development_page() -> None:
     with TestClient(app) as client:
         response = client.get("/")

@@ -37,7 +37,7 @@ def get_settings() -> Settings:
     if not server_key:
         raise RuntimeError("SERVER_KEY is missing from the environment or .env")
 
-    raw_allowlist = os.environ.get("COMMAND_ALLOWLIST", "h,m")
+    raw_allowlist = os.environ.get("COMMAND_ALLOWLIST", "*")
     command_allowlist = frozenset(
         command.strip().lower().lstrip(":")
         for command in raw_allowlist.split(",")

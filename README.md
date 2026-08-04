@@ -49,13 +49,18 @@ port 8000 through your router or use this unauthenticated app on public Wi-Fi.
 
 - `GET /health`: local application health.
 - `GET /api/server`: safe server summary without the server or join keys.
-- `POST /api/commands`: sends an allowlisted ER:LC command.
+- `POST /api/commands`: sends an ER:LC command.
 
-The default command allowlist is `h,m`. Configure it as a comma-separated list:
+All commands are enabled by default. Use a comma-separated list to restrict the
+application to specific commands, or use `*` to keep every command enabled:
 
 ```dotenv
-COMMAND_ALLOWLIST=h,m
+COMMAND_ALLOWLIST=*
 ```
+
+ER:LC can still reject commands that its remote API restricts. Because this
+control panel has no user authentication, every device that can reach it can
+attempt any enabled command.
 
 ## Development Checks
 
