@@ -43,9 +43,28 @@
         Players
       </a>
 
-      <a href="/#command-panel" class="sidebar-link">
+      <a
+        href="/commands"
+        class="sidebar-link{% if active_page == 'commands' %} active{% endif %}"
+      >
         <span class="sidebar-icon">›_</span>
         Commands
+      </a>
+
+      <a
+        href="/activity"
+        class="sidebar-link{% if active_page == 'activity' %} active{% endif %}"
+      >
+        <span class="sidebar-icon" aria-hidden="true">&#8801;</span>
+        Activity
+      </a>
+
+      <a
+        href="/map"
+        class="sidebar-link{% if active_page == 'map' %} active{% endif %}"
+      >
+        <span class="sidebar-icon" aria-hidden="true">&#9673;</span>
+        Map
       </a>
     </nav>
   </aside>
@@ -67,7 +86,13 @@
     <header class="header">
       <div>
         <p class="eyebrow">ER:LC private server</p>
-        <h1>{% if active_page == "players" %}Players{% else %}Server Control{% endif %}</h1>
+        <h1>
+          {% if active_page == "players" %}Players
+          {% elif active_page == "commands" %}Commands
+          {% elif active_page == "activity" %}Activity
+          {% elif active_page == "map" %}Live Map
+          {% else %}Server Control{% endif %}
+        </h1>
       </div>
 
       <div
@@ -88,12 +113,56 @@
           <p class="label">Live server roster</p>
           <h2 id="players-heading">Players</h2>
           <p class="players-summary" id="players-summary">Loading players...</p>
+          <p class="players-updated" id="players-updated">Not yet updated</p>
         </div>
 
         <button type="button" id="refresh-players-button" class="secondary-button">
           Refresh
         </button>
       </div>
+
+      <div class="players-stats" aria-label="Roster overview">
+        <div class="player-stat">
+          <span>Online</span>
+          <strong id="players-online">--</strong>
+        </div>
+        <div class="player-stat">
+          <span>Teams</span>
+          <strong id="players-teams">--</strong>
+        </div>
+        <div class="player-stat">
+          <span>Wanted</span>
+          <strong id="players-wanted">--</strong>
+        </div>
+      </div>
+
+      <div class="players-toolbar" aria-label="Player filters">
+        <label class="visually-hidden" for="player-search">Search players</label>
+        <input
+          id="player-search"
+          type="search"
+          placeholder="Search name, Roblox ID, team, callsign..."
+          autocomplete="off"
+        >
+
+        <label class="visually-hidden" for="team-filter">Filter by team</label>
+        <select id="team-filter">
+          <option value="">All teams</option>
+        </select>
+
+        <label class="visually-hidden" for="player-sort">Sort players</label>
+        <select id="player-sort">
+          <option value="name">Name</option>
+          <option value="team">Team</option>
+          <option value="wanted">Most wanted</option>
+        </select>
+
+        <button type="button" id="clear-player-filters" class="secondary-button">
+          Clear
+        </button>
+      </div>
+
+      <p id="players-results" class="players-results" role="status" aria-live="polite"></p>
 
       <div id="players-list" class="players-list" aria-live="polite">
         <p class="players-empty">Loading players...</p>
@@ -130,6 +199,120 @@
         </div>
       </form>
     </dialog>
+    {% elif active_page == "commands" %}
+    <section class="command-card" id="command-panel">
+      <div class="section-heading">
+        <div>
+          <p class="label">Virtual server management</p>
+          <h2>Run command</h2>
+        </div>
+      </div>
+
+      <form id="command-form">
+        <label for="command-input">Command</label>
+        <div class="command-row">
+          <input
+            id="command-input"
+            name="command"
+            type="text"
+            placeholder=":h Hello everyone!"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          >
+          <button id="command-button" type="submit">Run</button>
+        </div>
+      </form>
+
+      <p id="command-result" class="command-result" role="status" aria-live="polite"></p>
+    </section>
+
+    <section class="activity-card command-history-card" aria-labelledby="command-history-heading">
+      <div class="section-heading">
+        <div>
+          <p class="label">ER:LC command logs</p>
+          <h2 id="command-history-heading">Recent commands</h2>
+        </div>
+        <button type="button" id="refresh-command-logs-button" class="secondary-button">Refresh</button>
+      </div>
+      <p id="command-logs-summary" class="activity-summary">Loading command history...</p>
+      <div id="command-logs-list" class="activity-list" aria-live="polite">
+        <p class="players-empty">Loading command history...</p>
+      </div>
+    </section>
+    {% elif active_page == "activity" %}
+    <section class="activity-card" aria-labelledby="activity-heading">
+      <div class="section-heading">
+        <div>
+          <p class="label">Server activity</p>
+          <h2 id="activity-heading">Logs</h2>
+        </div>
+        <button type="button" id="refresh-activity-button" class="secondary-button">Refresh</button>
+      </div>
+
+      <div class="activity-toolbar" aria-label="Activity filters">
+        <label class="visually-hidden" for="activity-search">Search activity</label>
+        <input id="activity-search" type="search" placeholder="Search player, command, or event..." autocomplete="off">
+        <label class="visually-hidden" for="activity-filter">Filter activity type</label>
+        <select id="activity-filter">
+          <option value="all">All activity</option>
+          <option value="join">Joins and leaves</option>
+          <option value="kill">Kill log</option>
+          <option value="command">Command log</option>
+          <option value="moderation">Kick and ban commands</option>
+          <option value="call">Moderator calls</option>
+        </select>
+      </div>
+
+      <p id="activity-summary" class="activity-summary" role="status" aria-live="polite">Loading activity...</p>
+      <div id="activity-list" class="activity-list" aria-live="polite">
+        <p class="players-empty">Loading activity...</p>
+      </div>
+    </section>
+
+    <section class="activity-card bans-card" aria-labelledby="bans-heading">
+      <div class="section-heading">
+        <div>
+          <p class="label">ER:LC bans endpoint</p>
+          <h2 id="bans-heading">Current bans</h2>
+        </div>
+      </div>
+      <p class="activity-summary">The API does not provide timestamps for these bans.</p>
+      <div id="bans-list" class="bans-list" aria-live="polite">
+        <p class="players-empty">Loading current bans...</p>
+      </div>
+    </section>
+    {% elif active_page == "map" %}
+    <section class="map-card" aria-labelledby="map-heading">
+      <div class="section-heading">
+        <div>
+          <p class="label">Live player positions</p>
+          <h2 id="map-heading">Live map</h2>
+          <p id="map-summary" class="activity-summary">Loading player locations...</p>
+        </div>
+        <div class="map-actions">
+          <label class="visually-hidden" for="map-style">Map style</label>
+          <select id="map-style" class="map-style" aria-label="Map style">
+            <option value="fall">Fall map</option>
+            <option value="snow">Snow map</option>
+          </select>
+          <button type="button" id="refresh-map-button" class="secondary-button">Refresh</button>
+        </div>
+      </div>
+
+      <p class="map-note">Drag to pan after zooming. Markers use ER:LC's fixed 3121 × 3121 map coordinates and refresh every 2 seconds.</p>
+      <div class="map-navigation" aria-label="Map navigation">
+        <button type="button" id="map-zoom-out" class="map-nav-button" aria-label="Zoom out">&#8722;</button>
+        <button type="button" id="map-reset-view" class="map-nav-button map-reset-button">Reset view</button>
+        <button type="button" id="map-zoom-in" class="map-nav-button" aria-label="Zoom in">+</button>
+      </div>
+      <div id="live-map" class="live-map" role="region" aria-label="Live player coordinate map">
+        <div id="map-canvas" class="map-canvas map-fall">
+          <p class="players-empty">Loading player locations...</p>
+        </div>
+      </div>
+      <div id="map-player-list" class="map-player-list" aria-live="polite"></div>
+    </section>
     {% else %}
     <section class="server-card">
       <div class="server-info">

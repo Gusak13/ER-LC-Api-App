@@ -4,7 +4,7 @@ from app.client import ERLCAPIError, ERLCClient
 
 
 class FakeResponse:
-    def __init__(self, status_code: int, body: dict) -> None:
+    def __init__(self, status_code: int, body: dict | list) -> None:
         self.status_code = status_code
         self._body = body
 
@@ -45,6 +45,38 @@ def test_get_players_requests_v2_players_expansion() -> None:
         "GET",
         "https://api.erlc.gg/v2/server",
         {"timeout": 20, "params": {"Players": "true"}},
+    )
+
+
+def test_get_activity_requests_supported_v2_log_expansions() -> None:
+    session = FakeSession(FakeResponse(200, {}))
+    client = ERLCClient("secret", session=session)
+
+    assert client.get_activity() == {}
+    assert session.last_request == (
+        "GET",
+        "https://api.erlc.gg/v2/server",
+        {
+            "timeout": 20,
+            "params": {
+                "JoinLogs": "true",
+                "KillLogs": "true",
+                "CommandLogs": "true",
+                "ModCalls": "true",
+            },
+        },
+    )
+
+
+def test_get_bans_requests_legacy_bans_endpoint() -> None:
+    session = FakeSession(FakeResponse(200, {"PlayerId": "ExamplePlayer"}))
+    client = ERLCClient("secret", session=session)
+
+    assert client.get_bans() == {"PlayerId": "ExamplePlayer"}
+    assert session.last_request == (
+        "GET",
+        "https://api.erlc.gg/v1/server/bans",
+        {"timeout": 20},
     )
 
 

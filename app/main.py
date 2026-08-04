@@ -8,6 +8,7 @@ from fastapi.templating import Jinja2Templates
 
 from app.client import ERLCClient
 from app.config import PROJECT_ROOT, get_settings
+from app.routes.activity import router as activity_router
 from app.routes.commands import router as commands_router
 from app.routes.players import router as players_router
 from app.routes.server import router as server_router
@@ -32,9 +33,15 @@ app.mount(
     StaticFiles(directory=PROJECT_ROOT / "app" / "static"),
     name="static",
 )
+app.mount(
+    "/maps",
+    StaticFiles(directory=PROJECT_ROOT / "Maps"),
+    name="maps",
+)
 app.include_router(server_router)
 app.include_router(commands_router)
 app.include_router(players_router)
+app.include_router(activity_router)
 
 
 @app.get("/", response_class=HTMLResponse, include_in_schema=False)
@@ -52,6 +59,33 @@ def players_page(request: Request) -> HTMLResponse:
         request=request,
         name="index.html",
         context={"app_name": get_settings().app_name, "active_page": "players"},
+    )
+
+
+@app.get("/commands", response_class=HTMLResponse, include_in_schema=False)
+def commands_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"app_name": get_settings().app_name, "active_page": "commands"},
+    )
+
+
+@app.get("/activity", response_class=HTMLResponse, include_in_schema=False)
+def activity_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"app_name": get_settings().app_name, "active_page": "activity"},
+    )
+
+
+@app.get("/map", response_class=HTMLResponse, include_in_schema=False)
+def map_page(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(
+        request=request,
+        name="index.html",
+        context={"app_name": get_settings().app_name, "active_page": "map"},
     )
 
 
