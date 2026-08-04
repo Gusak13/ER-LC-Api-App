@@ -48,6 +48,27 @@ def test_get_players_requests_v2_players_expansion() -> None:
     )
 
 
+def test_get_dashboard_requests_documented_live_expansions() -> None:
+    session = FakeSession(FakeResponse(200, {"Players": [], "Vehicles": []}))
+    client = ERLCClient("secret", session=session)
+
+    assert client.get_dashboard() == {"Players": [], "Vehicles": []}
+    assert session.last_request == (
+        "GET",
+        "https://api.erlc.gg/v2/server",
+        {
+            "timeout": 20,
+            "params": {
+                "Players": "true",
+                "Staff": "true",
+                "Queue": "true",
+                "EmergencyCalls": "true",
+                "Vehicles": "true",
+            },
+        },
+    )
+
+
 def test_get_activity_requests_supported_v2_log_expansions() -> None:
     session = FakeSession(FakeResponse(200, {}))
     client = ERLCClient("secret", session=session)

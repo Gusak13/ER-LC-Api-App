@@ -53,6 +53,20 @@ const mapCanvas = document.querySelector("#map-canvas");
 const mapZoomInButton = document.querySelector("#map-zoom-in");
 const mapZoomOutButton = document.querySelector("#map-zoom-out");
 const mapResetViewButton = document.querySelector("#map-reset-view");
+const dashboardUpdated = document.querySelector("#dashboard-updated");
+const dashboardOnline = document.querySelector("#dashboard-online");
+const dashboardStaffOnline = document.querySelector("#dashboard-staff-online");
+const dashboardQueue = document.querySelector("#dashboard-queue");
+const dashboardCalls = document.querySelector("#dashboard-calls");
+const dashboardVehicles = document.querySelector("#dashboard-vehicles");
+const dashboardWanted = document.querySelector("#dashboard-wanted");
+const dashboardTeams = document.querySelector("#dashboard-teams");
+const dashboardStaff = document.querySelector("#dashboard-staff");
+const dashboardStaffTotal = document.querySelector("#dashboard-staff-total");
+const dashboardCallsList = document.querySelector("#dashboard-calls-list");
+const dashboardVehiclesList = document.querySelector("#dashboard-vehicles-list");
+const dashboardQueueList = document.querySelector("#dashboard-queue-list");
+const dashboardWantedList = document.querySelector("#dashboard-wanted-list");
 
 let selectedModeration = null;
 let allPlayers = [];
@@ -93,6 +107,157 @@ function setSidebar(open) {
     );
 }
 
+function createDashboardEmpty(message) {
+    const empty = document.createElement("p");
+    empty.className = "dashboard-empty";
+    empty.textContent = message;
+    return empty;
+}
+
+function createDashboardRow(title, details, tone = "") {
+    const row = document.createElement("div");
+    row.className = `dashboard-row ${tone}`.trim();
+    const copy = document.createElement("div");
+    const heading = document.createElement("strong");
+    heading.textContent = title;
+    const meta = document.createElement("span");
+    meta.textContent = details;
+    copy.append(heading, meta);
+    row.append(copy);
+    return row;
+}
+
+function setDashboardText(element, value) {
+    if (element) element.textContent = String(value);
+}
+
+function renderDashboardList(element, items, emptyMessage) {
+    if (!element) return;
+    element.replaceChildren(...(items.length ? items : [createDashboardEmpty(emptyMessage)]));
+}
+
+function renderDashboard(data) {
+    if (!dashboardOnline) return;
+
+    setDashboardText(dashboardOnline, data.current_players ?? 0);
+    setDashboardText(dashboardStaffOnline, data.staff_online?.length ?? 0);
+    setDashboardText(dashboardQueue, data.queue?.length ?? 0);
+    setDashboardText(dashboardCalls, data.emergency_calls?.length ?? 0);
+    setDashboardText(dashboardVehicles, data.vehicles?.length ?? 0);
+    setDashboardText(dashboardWanted, data.wanted_players?.length ?? 0);
+    setDashboardText(
+        dashboardUpdated,
+        `Updated ${new Intl.DateTimeFormat(undefined, { timeStyle: "medium" }).format(new Date())}`
+    );
+
+    const teams = Object.entries(data.team_counts || {}).sort(([, left], [, right]) => right - left);
+    if (dashboardTeams) {
+        const largestTeam = Math.max(1, ...teams.map(([, count]) => count));
+        dashboardTeams.replaceChildren(
+            ...(teams.length
+                ? teams.map(([team, count]) => {
+                    const item = document.createElement("div");
+                    item.className = "team-breakdown-item";
+                    const heading = document.createElement("div");
+                    const name = document.createElement("strong");
+                    name.textContent = team;
+                    const total = document.createElement("span");
+                    total.textContent = String(count);
+                    heading.append(name, total);
+                    const bar = document.createElement("span");
+                    bar.className = "team-breakdown-bar";
+                    const fill = document.createElement("span");
+                    fill.style.width = `${(count / largestTeam) * 100}%`;
+                    bar.append(fill);
+                    item.append(heading, bar);
+                    return item;
+                })
+                : [createDashboardEmpty("No players are currently online.")])
+        );
+    }
+
+    const configuredStaff = Object.values(data.staff_counts || {}).reduce(
+        (total, count) => total + Number(count || 0),
+        0
+    );
+    setDashboardText(dashboardStaffTotal, `${configuredStaff} configured`);
+    renderDashboardList(
+        dashboardStaff,
+        (data.staff_online || []).map((staff) =>
+            createDashboardRow(
+                staff.username,
+                `${staff.role} · ${staff.team}${staff.callsign ? ` · ${staff.callsign}` : ""}`,
+                "staff-row"
+            )
+        ),
+        "No staff members are currently online."
+    );
+    renderDashboardList(
+        dashboardCallsList,
+        (data.emergency_calls || []).map((call) =>
+            createDashboardRow(
+                `#${call.call_number} · ${call.caller}`,
+                `${call.team} · ${call.description} · ${call.position} · ${call.player_count} involved`,
+                "call-row"
+            )
+        ),
+        "No active emergency calls."
+    );
+    renderDashboardList(
+        dashboardVehiclesList,
+        (data.vehicles || []).map((vehicle) =>
+            createDashboardRow(
+                vehicle.name,
+                `${vehicle.owner}${vehicle.plate ? ` · ${vehicle.plate}` : ""}`,
+                "vehicle-row"
+            )
+        ),
+        "No spawned vehicles reported."
+    );
+    renderDashboardList(
+        dashboardQueueList,
+        (data.queue || []).map((playerId) =>
+            createDashboardRow("Waiting player", `Roblox ID ${playerId}`, "queue-row")
+        ),
+        "Nobody is waiting in the queue."
+    );
+    renderDashboardList(
+        dashboardWantedList,
+        (data.wanted_players || []).map((player) =>
+            createDashboardRow(
+                player.username,
+                `${player.team} · ${player.wanted_stars} wanted star${player.wanted_stars === 1 ? "" : "s"}`,
+                "wanted-row"
+            )
+        ),
+        "No wanted players online."
+    );
+}
+
+function renderDashboardError(message) {
+    setDashboardText(dashboardUpdated, "Live dashboard unavailable");
+    for (const stat of [
+        dashboardOnline,
+        dashboardStaffOnline,
+        dashboardQueue,
+        dashboardCalls,
+        dashboardVehicles,
+        dashboardWanted,
+    ]) {
+        setDashboardText(stat, "--");
+    }
+    for (const list of [
+        dashboardTeams,
+        dashboardStaff,
+        dashboardCallsList,
+        dashboardVehiclesList,
+        dashboardQueueList,
+        dashboardWantedList,
+    ]) {
+        if (list) list.replaceChildren(createDashboardEmpty(message));
+    }
+}
+
 async function loadServer() {
     if (!refreshButton || !serverName || !serverMeta || !currentPlayers || !maxPlayers) {
         return;
@@ -102,7 +267,7 @@ async function loadServer() {
     setConnectionStatus("", "Connecting...");
 
     try {
-        const response = await fetch("/api/server", {
+        const response = await fetch(dashboardOnline ? "/api/server/dashboard" : "/api/server", {
             headers: { Accept: "application/json" },
         });
         const payload = await response.json().catch(() => ({}));
@@ -117,12 +282,14 @@ async function loadServer() {
         const verification = payload.account_verification || "No verification requirement";
         const balance = payload.team_balance ? "Team balance on" : "Team balance off";
         serverMeta.textContent = `${verification} verification · ${balance}`;
+        renderDashboard(payload);
         setConnectionStatus("online", "Connected");
     } catch (error) {
         serverName.textContent = "Server unavailable";
         serverMeta.textContent = error instanceof Error ? error.message : "Could not load server details";
         currentPlayers.textContent = "--";
         maxPlayers.textContent = "--";
+        renderDashboardError(serverMeta.textContent);
         setConnectionStatus("offline", "Unavailable");
     } finally {
         refreshButton.disabled = false;

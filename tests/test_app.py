@@ -105,6 +105,75 @@ def test_server_endpoint_exposes_only_safe_summary() -> None:
     }
 
 
+def test_dashboard_endpoint_exposes_operational_snapshot() -> None:
+    class FakeClient:
+        def get_dashboard(self) -> dict:
+            return {
+                "Name": "Test Server",
+                "CurrentPlayers": 2,
+                "MaxPlayers": 40,
+                "AccVerifiedReq": "Email",
+                "TeamBalance": True,
+                "JoinKey": "must-not-leak",
+                "Players": [
+                    {
+                        "Player": "AdminNova:123",
+                        "Team": "Police",
+                        "Permission": "Admin",
+                        "Callsign": "P-12",
+                        "WantedStars": 0,
+                    },
+                    {
+                        "Player": "CivilianRiver:456",
+                        "Team": "Civilian",
+                        "Permission": "Normal",
+                        "WantedStars": 3,
+                    },
+                ],
+                "Staff": {
+                    "CoOwners": [1],
+                    "Admins": {"123": "AdminNova"},
+                    "Mods": {},
+                    "Helpers": {},
+                },
+                "Queue": [789],
+                "EmergencyCalls": [
+                    {
+                        "CallNumber": 4,
+                        "Caller": "CivilianRiver:456",
+                        "Team": "Police",
+                        "Description": "Traffic stop",
+                        "PositionDescriptor": "Near postal 123",
+                        "Players": ["AdminNova:123"],
+                    }
+                ],
+                "Vehicles": [
+                    {"Name": "Police Cruiser", "Owner": "AdminNova:123", "Plate": "P12"}
+                ],
+            }
+
+    with TestClient(app) as client:
+        app.state.erlc_client = FakeClient()
+        response = client.get("/api/server/dashboard")
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["name"] == "Test Server"
+    assert body["team_counts"] == {"Police": 1, "Civilian": 1}
+    assert body["staff_online"] == [
+        {"username": "AdminNova", "role": "Admin", "team": "Police", "callsign": "P-12"}
+    ]
+    assert body["wanted_players"] == [
+        {"username": "CivilianRiver", "wanted_stars": 3, "team": "Civilian"}
+    ]
+    assert body["queue"] == ["789"]
+    assert body["emergency_calls"][0]["description"] == "Traffic stop"
+    assert body["vehicles"] == [
+        {"name": "Police Cruiser", "owner": "AdminNova", "plate": "P12"}
+    ]
+    assert "must-not-leak" not in response.text
+
+
 def test_players_endpoint_returns_player_summaries() -> None:
     class FakeClient:
         def get_players(self) -> dict:

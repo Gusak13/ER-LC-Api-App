@@ -102,6 +102,22 @@ class ERLCClient:
             raise ERLCAPIError("ER:LC returned an unexpected players response")
         return response
 
+    def get_dashboard(self) -> dict[str, Any]:
+        response = self._request(
+            "GET",
+            "/v2/server",
+            params={
+                "Players": "true",
+                "Staff": "true",
+                "Queue": "true",
+                "EmergencyCalls": "true",
+                "Vehicles": "true",
+            },
+        )
+        if not isinstance(response, dict):
+            raise ERLCAPIError("ER:LC returned an unexpected dashboard response")
+        return response
+
     def get_activity(self) -> dict[str, Any]:
         response = self._request(
             "GET",

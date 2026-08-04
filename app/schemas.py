@@ -110,6 +110,151 @@ class PlayersResponse(BaseModel):
         return cls(players=[PlayerSummary.from_api(player) for player in raw_players])
 
 
+class DashboardStaffMember(BaseModel):
+    username: str
+    role: str
+    team: str
+    callsign: str | None
+
+
+class DashboardWantedPlayer(BaseModel):
+    username: str
+    wanted_stars: int
+    team: str
+
+
+class EmergencyCallSummary(BaseModel):
+    call_number: str
+    caller: str
+    team: str
+    description: str
+    position: str
+    player_count: int
+
+
+class VehicleSummary(BaseModel):
+    name: str
+    owner: str
+    plate: str | None
+
+
+class DashboardResponse(ServerSummary):
+    team_counts: dict[str, int]
+    staff_online: list[DashboardStaffMember]
+    staff_counts: dict[str, int]
+    wanted_players: list[DashboardWantedPlayer]
+    queue: list[str]
+    emergency_calls: list[EmergencyCallSummary]
+    vehicles: list[VehicleSummary]
+
+    @classmethod
+    def from_api(cls, data: dict[str, Any]) -> DashboardResponse:
+        base = ServerSummary.from_api(data)
+
+        def records(key: str) -> list[dict[str, Any]]:
+            value = data.get(key, [])
+            if not isinstance(value, list):
+                raise ValueError(f"ER:LC returned an invalid {key}")
+            return [record for record in value if isinstance(record, dict)]
+
+        def text(value: Any, fallback: str) -> str:
+            return (
+                value.strip() if isinstance(value, str) and value.strip() else fallback
+            )
+
+        def player_name(value: Any) -> str:
+            name = text(value, "Unknown player")
+            username, separator, raw_id = name.rpartition(":")
+            return username if separator and raw_id.isdigit() and username else name
+
+        players = [PlayerSummary.from_api(player) for player in records("Players")]
+        team_counts: dict[str, int] = {}
+        for player in players:
+            team_counts[player.team] = team_counts.get(player.team, 0) + 1
+
+        civilian_permissions = {"", "civilian", "normal", "player", "unknown"}
+        staff_online = [
+            DashboardStaffMember(
+                username=player.username,
+                role=player.permission,
+                team=player.team,
+                callsign=player.callsign,
+            )
+            for player in players
+            if player.permission.strip().lower() not in civilian_permissions
+        ]
+
+        raw_staff = data.get("Staff")
+        staff_counts = {"Co-owners": 0, "Admins": 0, "Moderators": 0, "Helpers": 0}
+        if isinstance(raw_staff, dict):
+            co_owners = raw_staff.get("CoOwners", [])
+            staff_counts["Co-owners"] = (
+                len(co_owners) if isinstance(co_owners, list) else 0
+            )
+            for api_key, label in (
+                ("Admins", "Admins"),
+                ("Mods", "Moderators"),
+                ("Helpers", "Helpers"),
+            ):
+                group = raw_staff.get(api_key, {})
+                staff_counts[label] = len(group) if isinstance(group, dict) else 0
+
+        wanted_players = [
+            DashboardWantedPlayer(
+                username=player.username,
+                wanted_stars=player.wanted_stars or 0,
+                team=player.team,
+            )
+            for player in players
+            if (player.wanted_stars or 0) > 0
+        ]
+        wanted_players.sort(key=lambda player: player.wanted_stars, reverse=True)
+
+        raw_queue = data.get("Queue", [])
+        queue = (
+            [str(player) for player in raw_queue] if isinstance(raw_queue, list) else []
+        )
+
+        emergency_calls = [
+            EmergencyCallSummary(
+                call_number=str(call.get("CallNumber") or "Active call"),
+                caller=player_name(call.get("Caller")),
+                team=text(call.get("Team"), "Unknown team"),
+                description=text(call.get("Description"), "No description supplied"),
+                position=text(call.get("PositionDescriptor"), "Location unavailable"),
+                player_count=len(call.get("Players", []))
+                if isinstance(call.get("Players"), list)
+                else 0,
+            )
+            for call in records("EmergencyCalls")
+        ]
+
+        vehicles = [
+            VehicleSummary(
+                name=text(vehicle.get("Name"), "Unknown vehicle"),
+                owner=player_name(vehicle.get("Owner")),
+                plate=(
+                    vehicle["Plate"].strip()
+                    if isinstance(vehicle.get("Plate"), str)
+                    and vehicle["Plate"].strip()
+                    else None
+                ),
+            )
+            for vehicle in records("Vehicles")
+        ]
+
+        return cls(
+            **base.model_dump(),
+            team_counts=team_counts,
+            staff_online=staff_online,
+            staff_counts=staff_counts,
+            wanted_players=wanted_players,
+            queue=queue,
+            emergency_calls=emergency_calls,
+            vehicles=vehicles,
+        )
+
+
 class JoinLogEntry(BaseModel):
     player: str
     joined: bool
