@@ -18,8 +18,21 @@ Set the real `SERVER_KEY` in `.env`, then start the development server:
 .\.venv\Scripts\python run.py
 ```
 
-Open `http://127.0.0.1:8000`. Interactive API documentation is available at
-`http://127.0.0.1:8000/docs`.
+On this computer, open `http://127.0.0.1:8000`.
+
+To use the control panel from a phone on the same local network, open
+`http://<YOUR-PC-IP>:8000` on the phone. The PC may use Wi-Fi or Ethernet as
+long as both devices connect through the same router. Find the address with:
+
+```powershell
+Get-NetIPConfiguration |
+    Where-Object IPv4DefaultGateway |
+    ForEach-Object { $_.IPv4Address.IPAddress }
+```
+
+Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
+The development server listens on all local network interfaces. Do not expose
+port 8000 through your router or use this unauthenticated app on public Wi-Fi.
 
 ## Application Layout
 

@@ -1,92 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>ER:LC Private server</title>
-
-    <link
-        rel="stylesheet"
-        href="{{ url_for('static', path='/css/styles.css') }}"
-    >
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ app_name }} · ER:LC</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 </head>
 
 <body>
-    <main class="dashboard">
-        <header class="header">
-            <div>
-                <p class="eyebrow">ER:LC API</p>
-                <h1>Private Server</h1>
-            </div>
+  <main class="dashboard">
+    <header class="header">
+      <div>
+        <p class="eyebrow">ER:LC private server</p>
+        <h1>Server Control</h1>
+      </div>
+      <div class="status" id="api-status" role="status" aria-live="polite">
+        <span class="status-dot"></span>
+        <span id="status-text">Connecting...</span>
+      </div>
+    </header>
 
-            <div class="status" id="api-status">
-                <span class="status-dot"></span>
-                <span id="status-text">Connecting...</span>
-            </div>
-        </header>
+    <section class="server-card">
+      <div class="server-info">
+        <p class="label">Server name</p>
+        <h2 id="server-name">Loading...</h2>
+        <p class="server-meta" id="server-meta">Fetching current server details</p>
+      </div>
+      <div class="player-count">
+        <p class="label">Players</p>
+        <div class="player-numbers">
+          <span id="current-players">--</span>
+          <span class="separator">/</span>
+          <span id="max-players">--</span>
+        </div>
+      </div>
+    </section>
 
-        <section class="server-card">
-            <div class="server-info">
-                <p class="label">Server name</p>
-                <h2 id="server-name">Loading...</h2>
-            </div>
+    <section class="command-card">
+      <div class="section-heading">
+        <div>
+          <p class="label">Virtual server management</p>
+          <h2>Run command</h2>
+        </div>
+        <button type="button" id="refresh-button" class="secondary-button">
+          <span aria-hidden="true">↻</span>
+          Refresh
+        </button>
+      </div>
 
-            <div class="player-count">
-                <p class="label">Players</p>
+      <form id="command-form">
+        <label for="command-input">Command</label>
+        <div class="command-row">
+          <input id="command-input" name="command" type="text" placeholder=":h Hello everyone!" autocomplete="off"
+            spellcheck="false" required>
+          <button id="command-button" type="submit">Run</button>
+        </div>
+      </form>
 
-                <div class="player-numbers">
-                    <span id="current-players">--</span>
-                    <span class="separator">/</span>
-                    <span id="max-players">--</span>
-                </div>
-            </div>
-        </section>
-
-        <section class="command-card">
-            <div class="section-heading">
-                <div>
-                    <p class="label">Virtual server management</p>
-                    <h2>Run command</h2>
-                </div>
-
-                <button
-                    type="button"
-                    id="refresh-button"
-                    class="secondary-button"
-                >
-                    Refresh
-                </button>
-            </div>
-
-            <form id="command-form">
-                <label for="command-input">Command</label>
-
-                <div class="command-row">
-                    <input
-                        id="command-input"
-                        name="command"
-                        type="text"
-                        placeholder=":h Hello everyone!"
-                        autocomplete="off"
-                        required
-                    >
-
-                    <button id="command-button" type="submit">
-                        Run
-                    </button>
-                </div>
-            </form>
-
-            <p
-                id="command-result"
-                class="command-result"
-                role="status"
-                aria-live="polite"
-            ></p>
-        </section>
-    </main>
-
-    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+      <p id="command-result" class="command-result" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+  <script src="{{ url_for('static', path='/js/app.js') }}"></script>
 </body>
+
 </html>
