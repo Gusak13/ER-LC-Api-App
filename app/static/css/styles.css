@@ -253,8 +253,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     *, *::before, *::after { transition-duration: 0.01ms !important; }
 }
 
-/* Sidebar */
-
 .sidebar {
     position: fixed;
     top: 0;
@@ -336,8 +334,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     font-size: 18px;
 }
 
-/* Hamburger button */
-
 .sidebar-toggle {
     position: fixed;
     top: 22px;
@@ -374,8 +370,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
         opacity 0.2s ease;
 }
 
-/* Turn hamburger into X */
-
 .sidebar-toggle.open span:nth-child(1) {
     transform: translateY(7px) rotate(45deg);
 }
@@ -387,8 +381,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
 .sidebar-toggle.open span:nth-child(3) {
     transform: translateY(-7px) rotate(-45deg);
 }
-
-/* Background overlay */
 
 .sidebar-overlay {
     position: fixed;
@@ -409,8 +401,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     opacity: 1;
     visibility: visible;
 }
-
-/* Give the heading space for the sidebar button */
 
 .dashboard {
     padding-top: 70px;
@@ -440,8 +430,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
         padding-top: 65px;
     }
 }
-
-/* Players */
 
 .players-card {
     padding: 25px;
@@ -487,7 +475,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     font-size: 11px;
     font-weight: 700;
     letter-spacing: 0.08em;
-    text-transform: uppercase;
 }
 
 .player-stat strong {
@@ -761,8 +748,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     }
 }
 
-/* Activity and map */
-
 .activity-card,
 .map-card {
     padding: 25px;
@@ -840,7 +825,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     font-weight: 750;
     letter-spacing: 0.07em;
     text-align: center;
-    text-transform: uppercase;
 }
 
 .activity-kind.join { background: rgba(66, 199, 119, 0.15); color: #9eeaba; }
@@ -1148,8 +1132,6 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     }
 }
 
-/* Visual refinement: quieter surfaces, stronger hierarchy, and clearer controls. */
-
 body {
     background:
         radial-gradient(circle at 82% 12%, rgba(78, 112, 184, 0.11), transparent 27rem),
@@ -1223,8 +1205,6 @@ input,
     }
 }
 
-/* Dashboard */
-
 .dashboard-overview,
 .dashboard-panel {
     background: linear-gradient(145deg, rgba(31, 41, 70, 0.98), rgba(22, 30, 53, 0.98));
@@ -1276,7 +1256,6 @@ input,
     font-weight: 700;
     letter-spacing: 0.07em;
     text-overflow: ellipsis;
-    text-transform: uppercase;
     white-space: nowrap;
 }
 
@@ -1461,6 +1440,512 @@ input,
 
     .dashboard-panel-wide {
         grid-column: auto;
+    }
+
+    .dashboard-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+:root {
+    --background: #111513;
+    --card: #171c19;
+    --card-light: #1d2420;
+    --input: #121714;
+    --border: #303a35;
+    --text: #edf1ee;
+    --muted: #9da7a1;
+    --accent: #8fb6a6;
+    --accent-hover: #a4c5b8;
+    --success: #78b893;
+    --danger: #d98787;
+}
+
+html {
+    background: var(--background);
+}
+
+body {
+    display: block;
+    min-height: 100vh;
+    padding: 0;
+    background: var(--background);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.dashboard {
+    width: auto;
+    max-width: 1120px;
+    margin: 0 auto 0 240px;
+    padding: 50px 48px 72px;
+    transition: none;
+}
+
+@media (min-width: 1000px) {
+    body.sidebar-open .dashboard {
+        transform: none;
+    }
+}
+
+.header {
+    align-items: flex-end;
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    border-bottom: 1px solid var(--border);
+}
+
+.eyebrow,
+.label,
+.sidebar-eyebrow,
+.player-stat span,
+.dashboard-stat span,
+.activity-kind {
+    letter-spacing: 0;
+    text-transform: none;
+}
+
+.eyebrow,
+.label {
+    margin-bottom: 4px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+h1 {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    font-weight: 680;
+    letter-spacing: -0.035em;
+}
+
+h2 {
+    font-size: 1.2rem;
+    font-weight: 650;
+    letter-spacing: -0.018em;
+}
+
+.status {
+    padding: 6px 10px;
+    background: transparent;
+    border-color: var(--border);
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    box-shadow: none;
+}
+
+.status.online,
+.status.offline {
+    color: var(--muted);
+}
+
+.status.online .status-dot,
+.status.offline .status-dot {
+    box-shadow: none;
+}
+
+.sidebar {
+    width: 240px;
+    padding: 26px 16px;
+    background: #141816;
+    border-right: 1px solid var(--border);
+    box-shadow: none;
+    transform: none;
+}
+
+.sidebar-header {
+    padding: 2px 10px 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.sidebar-header h2 {
+    font-size: 18px;
+    font-weight: 650;
+}
+
+.sidebar-eyebrow {
+    margin: 0 0 2px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.sidebar-nav {
+    gap: 3px;
+    margin-top: 18px;
+}
+
+.sidebar-link {
+    gap: 0;
+    padding: 9px 11px;
+    border: 1px solid transparent;
+    border-radius: 7px;
+    color: #aeb7b1;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.sidebar-link:hover {
+    background: #1b211e;
+    color: var(--text);
+}
+
+.sidebar-link.active {
+    background: #202823;
+    border-color: #344039;
+    box-shadow: none;
+    color: #f4f7f5;
+}
+
+.sidebar-link.active::before {
+    top: 10px;
+    bottom: 10px;
+    left: -7px;
+    width: 2px;
+    background: var(--accent);
+}
+
+.sidebar-toggle {
+    display: none;
+    background: var(--card);
+    border-color: var(--border);
+    box-shadow: none;
+}
+
+.sidebar-toggle span {
+    background: var(--text);
+}
+
+.sidebar-overlay {
+    background: rgba(5, 8, 6, 0.62);
+}
+
+.server-card,
+.command-card,
+.players-card,
+.activity-card,
+.map-card,
+.dashboard-overview,
+.dashboard-panel {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 11px;
+    box-shadow: none;
+}
+
+.server-card,
+.players-card,
+.activity-card,
+.map-card,
+.command-card {
+    padding: 22px;
+}
+
+.server-card {
+    margin-bottom: 16px;
+}
+
+.server-info h2 {
+    font-size: clamp(1.45rem, 3vw, 1.75rem);
+}
+
+.server-meta,
+.players-summary,
+.activity-summary,
+.dashboard-updated,
+.map-note {
+    color: var(--muted);
+}
+
+.player-count,
+.player-stat,
+.player-card,
+.activity-row,
+.ban-row,
+.map-player-item,
+.dashboard-stat,
+.team-breakdown-item,
+.dashboard-row,
+.dashboard-empty,
+.players-empty {
+    background: var(--card-light);
+    border-color: var(--border);
+    box-shadow: none;
+}
+
+.player-count {
+    min-width: 138px;
+}
+
+#current-players,
+.player-stat strong,
+.stat-players strong,
+.stat-staff strong,
+.stat-queue strong,
+.stat-calls strong,
+.stat-vehicles strong {
+    color: var(--text);
+}
+
+.stat-wanted strong {
+    color: #e1a2a2;
+}
+
+.section-heading {
+    margin-bottom: 18px;
+}
+
+input,
+.players-toolbar select,
+.activity-toolbar select,
+.map-style {
+    min-height: 41px;
+    background: var(--input);
+    border-color: var(--border);
+    border-radius: 7px;
+    color: var(--text);
+}
+
+input:hover,
+.players-toolbar select:hover,
+.activity-toolbar select:hover {
+    border-color: #46534c;
+}
+
+input:focus-visible,
+.players-toolbar select:focus-visible,
+.activity-toolbar select:focus-visible,
+.map-style:focus-visible {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(143, 182, 166, 0.15);
+    outline: none;
+}
+
+button {
+    border-radius: 7px;
+    font-weight: 600;
+}
+
+button:focus-visible {
+    outline-color: rgba(143, 182, 166, 0.35);
+}
+
+#command-button {
+    background: var(--accent);
+    box-shadow: none;
+    color: #101512;
+}
+
+#command-button:hover:not(:disabled) {
+    background: var(--accent-hover);
+}
+
+.secondary-button,
+.map-nav-button {
+    background: transparent;
+    border-color: var(--border);
+    box-shadow: none;
+    color: #dbe1dd;
+}
+
+.secondary-button:hover:not(:disabled),
+.map-nav-button:hover:not(:disabled) {
+    background: var(--card-light);
+    border-color: #46534c;
+}
+
+.dashboard-overview {
+    margin: 16px 0;
+    padding: 22px;
+}
+
+.dashboard-stats {
+    gap: 8px;
+}
+
+.dashboard-stat {
+    padding: 12px;
+    border-radius: 8px;
+}
+
+.dashboard-stat span,
+.player-stat span {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.dashboard-stat strong {
+    margin-top: 5px;
+    font-size: 22px;
+}
+
+.dashboard-grid {
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.dashboard-panel {
+    padding: 20px;
+}
+
+.panel-link,
+.panel-count {
+    color: var(--accent);
+    font-weight: 550;
+}
+
+.panel-link:hover,
+.panel-link:focus-visible {
+    color: var(--accent-hover);
+}
+
+.team-breakdown-bar {
+    background: #2a332e;
+}
+
+.team-breakdown-bar span {
+    background: var(--accent);
+}
+
+.dashboard-row::before {
+    background: #71877d;
+}
+
+.dashboard-row.staff-row::before,
+.dashboard-row.call-row::before,
+.dashboard-row.vehicle-row::before,
+.dashboard-row.queue-row::before {
+    background: #71877d;
+}
+
+.dashboard-row.wanted-row::before {
+    background: var(--danger);
+}
+
+.activity-kind {
+    min-width: 70px;
+    background: #27302b;
+    color: #c5cec9;
+    font-size: 11px;
+    font-weight: 550;
+}
+
+.activity-kind.join,
+.activity-kind.leave,
+.activity-kind.command,
+.activity-kind.call {
+    background: #27302b;
+    color: #c5cec9;
+}
+
+.activity-kind.kill,
+.activity-kind.moderation {
+    background: #352727;
+    color: #e2b2b2;
+}
+
+.team-badge {
+    background: #27312c;
+    border-color: #3a4941;
+    color: #c7d6cf;
+    font-weight: 550;
+}
+
+.player-action-button {
+    border-color: var(--border);
+}
+
+.player-action-button:hover:not(:disabled) {
+    background: #27302b;
+    border-color: #46534c;
+}
+
+.player-action-button.ban-action,
+.danger-button {
+    background: #7f4545;
+    border-color: #995656;
+}
+
+.player-action-button.ban-action:hover:not(:disabled),
+.danger-button:hover:not(:disabled) {
+    background: #925050;
+    border-color: #aa6262;
+}
+
+.moderation-dialog {
+    background: var(--card);
+    border-color: var(--border);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+}
+
+.moderation-player {
+    background: var(--card-light);
+    border-left-color: var(--accent);
+}
+
+.live-map {
+    background: #101411;
+    border-color: var(--border);
+    border-radius: 9px;
+}
+
+@media (max-width: 900px) {
+    .dashboard {
+        width: 100%;
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 78px 24px 56px;
+    }
+
+    .sidebar {
+        width: min(276px, 86vw);
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-toggle {
+        display: flex;
+        top: 18px;
+        left: 18px;
+        width: 42px;
+        height: 42px;
+    }
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 0;
+    }
+
+    .dashboard {
+        padding: 74px 14px 40px;
+    }
+
+    .header {
+        gap: 12px;
+        margin-bottom: 22px;
+        padding-bottom: 18px;
+    }
+
+    .server-card,
+    .players-card,
+    .activity-card,
+    .map-card,
+    .command-card,
+    .dashboard-overview,
+    .dashboard-panel {
+        padding: 18px;
     }
 
     .dashboard-stats {
