@@ -37,6 +37,7 @@ input {
     padding: 32px;
     background: #000;
     border: 1px solid #fff;
+    border-radius: 12px;
 }
 
 h1 {
@@ -65,6 +66,8 @@ h1 {
     border-radius: 0;
     color: #fff;
     outline: none;
+    border-radius: 12px;
+    transition: border-color 320ms ease, outline-color 320ms ease;
 }
 
 .login-form input::placeholder {
@@ -86,6 +89,8 @@ h1 {
     color: #000;
     cursor: pointer;
     font-weight: 700;
+    border-radius: 12px;
+    transition: background-color 320ms ease, color 320ms ease;
 }
 
 .login-form button:hover:not(:disabled),
