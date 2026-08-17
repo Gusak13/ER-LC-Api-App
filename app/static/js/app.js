@@ -67,6 +67,7 @@ const dashboardCallsList = document.querySelector("#dashboard-calls-list");
 const dashboardVehiclesList = document.querySelector("#dashboard-vehicles-list");
 const dashboardQueueList = document.querySelector("#dashboard-queue-list");
 const dashboardWantedList = document.querySelector("#dashboard-wanted-list");
+const logoutButton = document.querySelector("#logout-button");
 
 let selectedModeration = null;
 let allPlayers = [];
@@ -90,6 +91,12 @@ function getErrorMessage(payload, fallback) {
     if (typeof payload?.detail === "string") return payload.detail;
     if (typeof payload?.message === "string") return payload.message;
     return fallback;
+}
+
+function redirectIfSignedOut(response) {
+    if (response.status !== 401) return false;
+    window.location.replace("/login?expired=1");
+    return true;
 }
 
 function setSidebar(open) {
@@ -270,6 +277,7 @@ async function loadServer() {
         const response = await fetch(dashboardOnline ? "/api/server/dashboard" : "/api/server", {
             headers: { Accept: "application/json" },
         });
+        if (redirectIfSignedOut(response)) return;
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(getErrorMessage(payload, "Could not reach the server"));
@@ -321,6 +329,7 @@ async function submitCommand(event) {
             },
             body: JSON.stringify({ command }),
         });
+        if (redirectIfSignedOut(response)) return;
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(getErrorMessage(payload, "The command could not be sent"));
@@ -526,6 +535,7 @@ async function loadPlayers() {
         const response = await fetch("/api/players", {
             headers: { Accept: "application/json" },
         });
+        if (redirectIfSignedOut(response)) return;
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(getErrorMessage(payload, "Could not load players"));
@@ -587,6 +597,7 @@ async function submitModeration(event) {
             },
             body: JSON.stringify({ command }),
         });
+        if (redirectIfSignedOut(response)) return;
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(getErrorMessage(payload, `Could not ${action} player`));
@@ -749,6 +760,7 @@ async function fetchActivity() {
     const response = await fetch("/api/activity", {
         headers: { Accept: "application/json" },
     });
+    if (redirectIfSignedOut(response)) return {};
     const payload = await response.json().catch(() => ({}));
     if (!response.ok) {
         throw new Error(getErrorMessage(payload, "Could not load server activity"));
@@ -917,6 +929,7 @@ async function loadMap() {
         const response = await fetch("/api/players", {
             headers: { Accept: "application/json" },
         });
+        if (redirectIfSignedOut(response)) return;
         const payload = await response.json().catch(() => ({}));
         if (!response.ok) {
             throw new Error(getErrorMessage(payload, "Could not load player locations"));
@@ -1001,6 +1014,18 @@ if (sidebar && sidebarToggle && sidebarOverlay) {
     });
     sidebarOverlay.addEventListener("click", () => setSidebar(false));
 }
+
+logoutButton?.addEventListener("click", async () => {
+    logoutButton.disabled = true;
+    try {
+        await fetch("/api/auth/logout", {
+            method: "POST",
+            headers: { Accept: "application/json" },
+        });
+    } finally {
+        window.location.replace("/login");
+    }
+});
 
 if (playersList && refreshPlayersButton && moderationForm) {
     refreshPlayersButton.addEventListener("click", loadPlayers);

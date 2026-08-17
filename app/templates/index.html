@@ -7,10 +7,7 @@
 
   <title>{{ app_name }} · ER:LC</title>
 
-  <link
-    rel="stylesheet"
-    href="{{ url_for('static', path='/css/styles.css') }}"
-  >
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 </head>
 
 <body>
@@ -25,51 +22,36 @@
     </div>
 
     <nav class="sidebar-nav">
-      <a
-        href="/"
-        class="sidebar-link{% if active_page == 'dashboard' %} active{% endif %}"
-      >
+      <a href="/" class="sidebar-link{% if active_page == 'dashboard' %} active{% endif %}">
         Dashboard
       </a>
 
-      <a
-        href="/players"
-        class="sidebar-link{% if active_page == 'players' %} active{% endif %}"
-      >
+      <a href="/players" class="sidebar-link{% if active_page == 'players' %} active{% endif %}">
         Players
       </a>
 
-      <a
-        href="/commands"
-        class="sidebar-link{% if active_page == 'commands' %} active{% endif %}"
-      >
+      <a href="/commands" class="sidebar-link{% if active_page == 'commands' %} active{% endif %}">
         Commands
       </a>
 
-      <a
-        href="/activity"
-        class="sidebar-link{% if active_page == 'activity' %} active{% endif %}"
-      >
+      <a href="/activity" class="sidebar-link{% if active_page == 'activity' %} active{% endif %}">
         Activity
       </a>
 
-      <a
-        href="/map"
-        class="sidebar-link{% if active_page == 'map' %} active{% endif %}"
-      >
+      <a href="/map" class="sidebar-link{% if active_page == 'map' %} active{% endif %}">
         Map
       </a>
     </nav>
+
+    <div class="sidebar-session">
+      <span>Connected server</span>
+      <strong>{{ server_name }}</strong>
+      <button id="logout-button" class="logout-button" type="button">Disconnect</button>
+    </div>
   </aside>
 
-  <button
-    id="sidebar-toggle"
-    class="sidebar-toggle"
-    type="button"
-    aria-label="Open navigation"
-    aria-controls="sidebar"
-    aria-expanded="false"
-  >
+  <button id="sidebar-toggle" class="sidebar-toggle" type="button" aria-label="Open navigation" aria-controls="sidebar"
+    aria-expanded="false">
     <span></span>
     <span></span>
     <span></span>
@@ -88,12 +70,7 @@
         </h1>
       </div>
 
-      <div
-        class="status"
-        id="api-status"
-        role="status"
-        aria-live="polite"
-      >
+      <div class="status" id="api-status" role="status" aria-live="polite">
         <span class="status-dot"></span>
         <span id="status-text">Connecting...</span>
       </div>
@@ -131,12 +108,8 @@
 
       <div class="players-toolbar" aria-label="Player filters">
         <label class="visually-hidden" for="player-search">Search players</label>
-        <input
-          id="player-search"
-          type="search"
-          placeholder="Search name, Roblox ID, team, callsign..."
-          autocomplete="off"
-        >
+        <input id="player-search" type="search" placeholder="Search name, Roblox ID, team, callsign..."
+          autocomplete="off">
 
         <label class="visually-hidden" for="team-filter">Filter by team</label>
         <select id="team-filter">
@@ -169,20 +142,15 @@
             <p class="label">Player moderation</p>
             <h2 id="moderation-title">Moderate player</h2>
           </div>
-          <button type="button" id="moderation-cancel-button" class="dialog-close" aria-label="Close moderation dialog">×</button>
+          <button type="button" id="moderation-cancel-button" class="dialog-close"
+            aria-label="Close moderation dialog">×</button>
         </div>
 
         <p id="moderation-player" class="moderation-player"></p>
 
         <label for="moderation-reason">Reason <span>(optional)</span></label>
-        <input
-          id="moderation-reason"
-          name="reason"
-          type="text"
-          maxlength="120"
-          placeholder="Reason shown in the command"
-          autocomplete="off"
-        >
+        <input id="moderation-reason" name="reason" type="text" maxlength="120"
+          placeholder="Reason shown in the command" autocomplete="off">
 
         <p id="moderation-result" class="command-result" role="status" aria-live="polite"></p>
 
@@ -204,15 +172,8 @@
       <form id="command-form">
         <label for="command-input">Command</label>
         <div class="command-row">
-          <input
-            id="command-input"
-            name="command"
-            type="text"
-            placeholder=":h Hello everyone!"
-            autocomplete="off"
-            spellcheck="false"
-            required
-          >
+          <input id="command-input" name="command" type="text" placeholder=":h Hello everyone!" autocomplete="off"
+            spellcheck="false" required>
           <button id="command-button" type="submit">Run</button>
         </div>
       </form>
@@ -293,7 +254,8 @@
         </div>
       </div>
 
-      <p class="map-note">Drag to pan after zooming. Markers use ER:LC's fixed 3121 × 3121 map coordinates and refresh every 2 seconds.</p>
+      <p class="map-note">Drag to pan after zooming. Markers use ER:LC's fixed 3121 × 3121 map coordinates and refresh
+        every 2 seconds.</p>
       <div class="map-navigation" aria-label="Map navigation">
         <button type="button" id="map-zoom-out" class="map-nav-button" aria-label="Zoom out">&#8722;</button>
         <button type="button" id="map-reset-view" class="map-nav-button map-reset-button">Reset view</button>
@@ -376,7 +338,7 @@
             <p class="label">Player distribution</p>
             <h2 id="teams-heading">Teams online</h2>
           </div>
-          <a class="panel-link" href="/players">Roster</a>
+          <a class="panel-link" href="/players">Players</a>
         </div>
         <div id="dashboard-teams" class="team-breakdown" aria-live="polite">
           <p class="dashboard-empty">Loading teams...</p>
@@ -389,7 +351,6 @@
             <p class="label">Live coverage</p>
             <h2 id="staff-heading">Staff on duty</h2>
           </div>
-          <span id="dashboard-staff-total" class="panel-count">-- configured</span>
         </div>
         <div id="dashboard-staff" class="dashboard-list" aria-live="polite">
           <p class="dashboard-empty">Loading staff...</p>
@@ -402,7 +363,6 @@
             <p class="label">Emergency service</p>
             <h2 id="calls-heading">Active emergency calls</h2>
           </div>
-          <span class="panel-count">Live</span>
         </div>
         <div id="dashboard-calls-list" class="dashboard-list" aria-live="polite">
           <p class="dashboard-empty">Loading calls...</p>
@@ -415,7 +375,6 @@
             <p class="label">Server activity</p>
             <h2 id="vehicles-heading">Spawned vehicles</h2>
           </div>
-          <span class="panel-count">Live</span>
         </div>
         <div id="dashboard-vehicles-list" class="dashboard-list" aria-live="polite">
           <p class="dashboard-empty">Loading vehicles...</p>
@@ -428,7 +387,6 @@
             <p class="label">Join queue</p>
             <h2 id="queue-heading">Waiting players</h2>
           </div>
-          <span class="panel-count">Live</span>
         </div>
         <div id="dashboard-queue-list" class="dashboard-list compact-list" aria-live="polite">
           <p class="dashboard-empty">Loading queue...</p>
@@ -462,15 +420,8 @@
         <label for="command-input">Command</label>
 
         <div class="command-row">
-          <input
-            id="command-input"
-            name="command"
-            type="text"
-            placeholder=":h Hello everyone!"
-            autocomplete="off"
-            spellcheck="false"
-            required
-          >
+          <input id="command-input" name="command" type="text" placeholder=":h Hello everyone!" autocomplete="off"
+            spellcheck="false" required>
 
           <button id="command-button" type="submit">
             Run
@@ -478,12 +429,7 @@
         </div>
       </form>
 
-      <p
-        id="command-result"
-        class="command-result"
-        role="status"
-        aria-live="polite"
-      ></p>
+      <p id="command-result" class="command-result" role="status" aria-live="polite"></p>
     </section>
     {% endif %}
   </main>

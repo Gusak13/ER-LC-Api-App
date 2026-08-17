@@ -249,6 +249,43 @@ button:disabled { cursor: not-allowed; opacity: 0.55; }
     #command-button { width: 100%; }
 }
 
+.sidebar-session {
+    display: grid;
+    gap: 5px;
+    margin-top: auto;
+    padding: 18px 20px 20px;
+    border-top: 1px solid var(--border);
+}
+
+.sidebar-session span {
+    color: var(--muted);
+    font-size: 11px;
+}
+
+.sidebar-session strong {
+    overflow: hidden;
+    color: var(--text);
+    font-size: 13px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.logout-button {
+    margin-top: 8px;
+    padding: 8px 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--muted);
+    cursor: pointer;
+    text-align: left;
+}
+
+.logout-button:hover:not(:disabled) {
+    background: var(--card-light);
+    color: var(--text);
+}
+
 @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { transition-duration: 0.01ms !important; }
 }

@@ -4,6 +4,42 @@ from fastapi.testclient import TestClient
 from app.config import get_settings
 from app.main import app
 
+TEST_ORIGIN = {"Origin": "http://testserver"}
+
+
+class AuthenticatedFakeClient:
+    def __init__(self, target=None) -> None:
+        self.target = target
+
+    def get_server(self) -> dict:
+        if self.target is not None and hasattr(self.target, "get_server"):
+            return self.target.get_server()
+        return {
+            "Name": "Test Server",
+            "CurrentPlayers": 0,
+            "MaxPlayers": 40,
+            "AccVerifiedReq": "None",
+            "TeamBalance": False,
+        }
+
+    def close(self) -> None:
+        pass
+
+    def __getattr__(self, name: str):
+        if self.target is None:
+            raise AttributeError(name)
+        return getattr(self.target, name)
+
+
+def login(client: TestClient, target=None) -> None:
+    app.state.client_factory = lambda _api_key: AuthenticatedFakeClient(target)
+    response = client.post(
+        "/api/auth/login",
+        json={"api_key": "test-api-key"},
+        headers=TEST_ORIGIN,
+    )
+    assert response.status_code == 200
+
 
 @pytest.fixture(autouse=True)
 def test_settings(monkeypatch: pytest.MonkeyPatch):
@@ -33,6 +69,7 @@ def test_default_command_allowlist_enables_all(
 
 def test_index_renders_development_page() -> None:
     with TestClient(app) as client:
+        login(client)
         response = client.get("/")
 
     assert response.status_code == 200
@@ -42,6 +79,7 @@ def test_index_renders_development_page() -> None:
 
 def test_players_page_renders_players_view() -> None:
     with TestClient(app) as client:
+        login(client)
         response = client.get("/players")
 
     assert response.status_code == 200
@@ -52,6 +90,7 @@ def test_players_page_renders_players_view() -> None:
 
 def test_navigation_pages_render_their_expected_controls() -> None:
     with TestClient(app) as client:
+        login(client)
         commands = client.get("/commands")
         activity = client.get("/activity")
         map_page = client.get("/map")
@@ -92,7 +131,7 @@ def test_server_endpoint_exposes_only_safe_summary() -> None:
             }
 
     with TestClient(app) as client:
-        app.state.erlc_client = FakeClient()
+        login(client, FakeClient())
         response = client.get("/api/server")
 
     assert response.status_code == 200
@@ -153,7 +192,7 @@ def test_dashboard_endpoint_exposes_operational_snapshot() -> None:
             }
 
     with TestClient(app) as client:
-        app.state.erlc_client = FakeClient()
+        login(client, FakeClient())
         response = client.get("/api/server/dashboard")
 
     assert response.status_code == 200
@@ -197,7 +236,7 @@ def test_players_endpoint_returns_player_summaries() -> None:
             }
 
     with TestClient(app) as client:
-        app.state.erlc_client = FakeClient()
+        login(client, FakeClient())
         response = client.get("/api/players")
 
     assert response.status_code == 200
@@ -252,7 +291,7 @@ def test_activity_endpoint_returns_logs_and_current_bans() -> None:
             return [{"PlayerId": "BannedPlayer"}]
 
     with TestClient(app) as client:
-        app.state.erlc_client = FakeClient()
+        login(client, FakeClient())
         response = client.get("/api/activity")
 
     assert response.status_code == 200

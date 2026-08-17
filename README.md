@@ -12,13 +12,25 @@ python -m venv .venv
 Copy-Item .env.example .env
 ```
 
-Set the real `SERVER_KEY` in `.env`, then start the development server:
+Optionally configure command and session policy in `.env`, then start the
+development server:
 
 ```powershell
 .\.venv\Scripts\python run.py
 ```
 
 On this computer, open `http://127.0.0.1:8000`.
+
+The sign-in page accepts an ER:LC server API key and validates it with ER:LC.
+The key is held only in server memory and is not saved to browser storage or
+cookies. The browser receives an opaque,
+`HttpOnly`, `SameSite=Strict` session cookie, and the session expires after 30
+minutes of inactivity or eight hours total. Logging out or restarting the app
+immediately discards the in-memory key.
+
+For a public or internet-facing deployment, terminate HTTPS in front of the
+app and set `SESSION_COOKIE_SECURE=true`. Plain HTTP should be used only on a
+trusted local machine or network because transport encryption is not available.
 
 To use the control panel from a phone on the same local network, open
 `http://<YOUR-PC-IP>:8000` on the phone. The PC may use Wi-Fi or Ethernet as
