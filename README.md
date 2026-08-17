@@ -1,10 +1,23 @@
 # ER:LC Control Panel
 
-A server-side FastAPI foundation for an ER:LC private-server control panel.
-The browser talks only to this application; the ER:LC server key remains on the
-backend.
+This app is a simple web control panel for an [Emergency Response: Liberty County](https://www.roblox.com/games/2534724415/Emergency-Response-Liberty-County) private server.
 
-## Setup
+It displays the current server status, players, activity and player locations on a map. It can also send allowed commands to the server.
+
+The project is built as one FastAPI app:
+
+* A Python backend communicates with the ER:LC API and keeps the server key private
+* A server-rendered web interface displays the data and provides the controls
+
+## Used data resources
+
+The app uses the official [ER:LC Private Server API](https://apidocs.erlc.gg/) to retrieve live server data and send commands.
+
+Player locations are displayed using the local postal map images in the `Maps` folder.
+
+## How to run
+
+Create a virtual environment, install the dependencies and copy the example configuration:
 
 ```powershell
 python -m venv .venv
@@ -12,79 +25,20 @@ python -m venv .venv
 Copy-Item .env.example .env
 ```
 
-Optionally configure command and session policy in `.env`, then start the
-development server:
+Start the app:
 
 ```powershell
 .\.venv\Scripts\python run.py
 ```
 
-On this computer, open `http://127.0.0.1:8000`.
+Open `http://127.0.0.1:8000` and sign in with your ER:LC server API key. Other devices on the same network can use `http://<YOUR-PC-IP>:8000`.
 
-The sign-in page accepts an ER:LC server API key and validates it with ER:LC.
-The key is held only in server memory and is not saved to browser storage or
-cookies. The browser receives an opaque,
-`HttpOnly`, `SameSite=Strict` session cookie, and the session expires after 30
-minutes of inactivity or eight hours total. Logging out or restarting the app
-immediately discards the in-memory key.
+## Security
 
-For a public or internet-facing deployment, terminate HTTPS in front of the
-app and set `SESSION_COOKIE_SECURE=true`. Plain HTTP should be used only on a
-trusted local machine or network because transport encryption is not available.
+The server key is kept in server memory and is not stored in the browser. This app is intended for local or trusted-network use and should not be exposed directly to the internet.
 
-To use the control panel from a phone on the same local network, open
-`http://<YOUR-PC-IP>:8000` on the phone. The PC may use Wi-Fi or Ethernet as
-long as both devices connect through the same router. Find the address with:
+Commands are enabled by default. Set `COMMAND_ALLOWLIST` in `.env` to a comma-separated list if you want to restrict them.
 
-```powershell
-Get-NetIPConfiguration |
-    Where-Object IPv4DefaultGateway |
-    ForEach-Object { $_.IPv4Address.IPAddress }
-```
+## AI disclaimer
 
-Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
-The development server listens on all local network interfaces. Do not expose
-port 8000 through your router or use this unauthenticated app on public Wi-Fi.
-
-## Application Layout
-
-- `app/config.py`: environment configuration and command allowlist.
-- `app/client.py`: ER:LC HTTP client with no automatic retries.
-- `app/schemas.py`: validated public request and response models.
-- `app/services/`: application policy, including command authorization.
-- `app/routes/`: FastAPI server and command endpoints.
-- `app/templates/`: server-rendered HTML.
-- `app/static/`: browser CSS and JavaScript.
-- `tests/`: client, service, and application tests.
-
-## API
-
-- `GET /health`: local application health.
-- `GET /api/server`: safe server summary without the server or join keys.
-- `GET /api/players`: current player summaries from the ER:LC v2 `Players` expansion.
-- `POST /api/commands`: sends an ER:LC command.
-
-All commands are enabled by default. Use a comma-separated list to restrict the
-application to specific commands, or use `*` to keep every command enabled:
-
-```dotenv
-COMMAND_ALLOWLIST=*
-```
-
-ER:LC can still reject commands that its remote API restricts. Because this
-control panel has no user authentication, every device that can reach it can
-attempt any enabled command.
-
-## Development Checks
-
-```powershell
-.\.venv\Scripts\python -m pytest
-.\.venv\Scripts\ruff check .
-```
-
-## Security Boundary
-
-Do not expose this application publicly until authentication, role-based access,
-CSRF protection, rate limiting, and audit logging are implemented. The backend's
-public IP must be authorized in the ER:LC Server Owner Dashboard before command
-requests can succeed.
+AI was used during the creation of this project to help explain concepts and assist with parts of the code. Generated code was reviewed and adjusted to fit the project.
