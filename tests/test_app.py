@@ -98,6 +98,7 @@ def test_navigation_pages_render_their_expected_controls() -> None:
 
     assert commands.status_code == 200
     assert 'id="command-logs-list"' in commands.text
+    assert 'id="api-status"' in commands.text
     assert activity.status_code == 200
     assert 'id="activity-filter"' in activity.text
     assert 'id="bans-list"' in activity.text
@@ -107,8 +108,33 @@ def test_navigation_pages_render_their_expected_controls() -> None:
     assert 'id="map-canvas"' in map_page.text
     assert 'id="map-zoom-in"' in map_page.text
     assert settings.status_code == 200
+    assert "Settings" in settings.text
+    assert 'href="/settings" class="sidebar-link active"' in settings.text
+    assert 'id="api-status"' not in settings.text
+    assert "Connecting..." not in settings.text
     assert 'id="theme-primary"' in settings.text
+    assert 'id="theme-primary-value"' in settings.text
+    assert 'id="theme-secondary-value"' in settings.text
+    assert 'data-primary="#8b5cf6"' in settings.text
+    assert 'data-secondary="#ec4899"' in settings.text
+    assert 'data-primary="#3b82f6"' in settings.text
+    assert 'data-secondary="#06b6d4"' in settings.text
+    assert 'data-primary="#ef4444"' in settings.text
+    assert 'data-secondary="#f97316"' in settings.text
+    assert 'data-primary="#22c55e"' in settings.text
+    assert 'data-secondary="#14b8a6"' in settings.text
     assert 'id="reset-theme"' in settings.text
+    assert 'id="apply-theme-button"' in settings.text
+    assert settings.text.index("theme-init.js") < settings.text.index("styles.css")
+
+
+def test_theme_bootstrap_asset_is_available() -> None:
+    with TestClient(app) as client:
+        response = client.get("/static/js/theme-init.js")
+
+    assert response.status_code == 200
+    assert response.headers["content-type"].startswith("text/javascript")
+    assert 'const STORAGE_KEY = "erlc-theme"' in response.text
 
 
 def test_local_map_assets_are_available() -> None:

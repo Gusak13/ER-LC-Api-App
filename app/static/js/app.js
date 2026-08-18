@@ -71,6 +71,10 @@ const logoutButton = document.querySelector("#logout-button");
 const themePresets = document.querySelectorAll(".theme-preset");
 const themePrimary = document.querySelector("#theme-primary");
 const themeSecondary = document.querySelector("#theme-secondary");
+const themePrimaryValue = document.querySelector("#theme-primary-value");
+const themeSecondaryValue = document.querySelector("#theme-secondary-value");
+const themePreview = document.querySelector("#theme-preview");
+const applyThemeButton = document.querySelector("#apply-theme-button");
 const resetThemeButton = document.querySelector("#reset-theme");
 
 let selectedModeration = null;
@@ -82,48 +86,85 @@ let mapOffsetX = 0;
 let mapOffsetY = 0;
 let mapPanStart = null;
 const MAP_IMAGE_SIZE = 3121;
-const THEME_STORAGE_KEY = "erlc-theme";
-const DEFAULT_THEME = { primary: "#8fb6a6", secondary: "#9f8cff" };
+const themeSystem = window.ERLCTheme;
+const THEME_STORAGE_KEY = themeSystem.STORAGE_KEY;
+const DEFAULT_THEME = themeSystem.DEFAULT_THEME;
+let activeTheme = DEFAULT_THEME;
+let pendingPrimary;
+let pendingSecondary;
 
-function isHexColor(value) {
-    return /^#[0-9a-f]{6}$/i.test(value);
-}
-
-function readStoredTheme() {
+function saveTheme(theme) {
     try {
-        const stored = JSON.parse(window.localStorage.getItem(THEME_STORAGE_KEY));
-        if (isHexColor(stored?.primary) && isHexColor(stored?.secondary)) return stored;
+        window.localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(theme));
     } catch {
-        // Ignore unavailable storage or malformed values and use the default theme.
+        // The current page can still use the theme when storage is unavailable.
     }
-    return DEFAULT_THEME;
 }
 
-function applyTheme(theme, persist = false) {
-    const primary = isHexColor(theme.primary) ? theme.primary.toLowerCase() : DEFAULT_THEME.primary;
-    const secondary = isHexColor(theme.secondary) ? theme.secondary.toLowerCase() : DEFAULT_THEME.secondary;
+function loadTheme() {
+    return themeSystem.loadStoredTheme();
+}
 
-    document.documentElement.style.setProperty("--primary", primary);
-    document.documentElement.style.setProperty("--secondary", secondary);
-    if (themePrimary) themePrimary.value = primary;
-    if (themeSecondary) themeSecondary.value = secondary;
+function updateThemeControls() {
+    if (!pendingPrimary || !pendingSecondary) return;
+
+    if (themePrimary) themePrimary.value = pendingPrimary;
+    if (themeSecondary) themeSecondary.value = pendingSecondary;
+    if (themePrimaryValue) themePrimaryValue.textContent = pendingPrimary.toUpperCase();
+    if (themeSecondaryValue) themeSecondaryValue.textContent = pendingSecondary.toUpperCase();
+    if (themePreview) {
+        themePreview.style.setProperty("--preview-primary", pendingPrimary);
+        themePreview.style.setProperty("--preview-secondary", pendingSecondary);
+    }
 
     themePresets.forEach((preset) => {
-        const selected = preset.dataset.primary?.toLowerCase() === primary
-            && preset.dataset.secondary?.toLowerCase() === secondary;
+        const selected = preset.dataset.primary?.toLowerCase() === pendingPrimary
+            && preset.dataset.secondary?.toLowerCase() === pendingSecondary;
+        preset.classList.toggle("selected", selected);
         preset.setAttribute("aria-pressed", String(selected));
     });
 
-    if (persist) {
-        try {
-            window.localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ primary, secondary }));
-        } catch {
-            // The theme still applies for this page when storage is unavailable.
-        }
+    if (applyThemeButton) {
+        applyThemeButton.disabled = pendingPrimary === activeTheme.primary
+            && pendingSecondary === activeTheme.secondary;
     }
 }
 
-applyTheme(readStoredTheme());
+function setPendingTheme(theme) {
+    const normalized = themeSystem.normalizeTheme(theme);
+    if (!normalized) return;
+    pendingPrimary = normalized.primary;
+    pendingSecondary = normalized.secondary;
+    updateThemeControls();
+}
+
+function applyTheme(theme, shouldSave = false) {
+    const appliedTheme = themeSystem.setThemeProperties(theme);
+    if (shouldSave) saveTheme(appliedTheme);
+    return appliedTheme;
+}
+
+function applyPendingTheme() {
+    if (!pendingPrimary || !pendingSecondary) return;
+    activeTheme = applyTheme(
+        { primary: pendingPrimary, secondary: pendingSecondary },
+        true
+    );
+    setPendingTheme(activeTheme);
+}
+
+function resetTheme() {
+    try {
+        window.localStorage.removeItem(THEME_STORAGE_KEY);
+    } catch {
+        // Reset still applies for this page when storage is unavailable.
+    }
+    activeTheme = applyTheme(DEFAULT_THEME);
+    setPendingTheme(activeTheme);
+}
+
+activeTheme = applyTheme(loadTheme());
+setPendingTheme(activeTheme);
 
 function setConnectionStatus(state, text) {
     if (!statusElement || !statusText) return;
@@ -1108,24 +1149,35 @@ if (liveMap && refreshMapButton) {
     }, 2000);
 }
 
-if (themePrimary && themeSecondary) {
-    themePresets.forEach((preset) => {
-        preset.addEventListener("click", () => {
-            applyTheme(
-                { primary: preset.dataset.primary, secondary: preset.dataset.secondary },
-                true
-            );
+themePresets.forEach((preset) => {
+    preset.addEventListener("click", () => {
+        setPendingTheme({
+            primary: preset.dataset.primary,
+            secondary: preset.dataset.secondary,
         });
     });
+});
+
+if (themePrimary) {
     themePrimary.addEventListener("input", () => {
-        applyTheme({ primary: themePrimary.value, secondary: themeSecondary.value }, true);
+        setPendingTheme({
+            primary: themePrimary.value,
+            secondary: pendingSecondary || activeTheme.secondary,
+        });
     });
-    themeSecondary.addEventListener("input", () => {
-        applyTheme({ primary: themePrimary.value, secondary: themeSecondary.value }, true);
-    });
-    resetThemeButton?.addEventListener("click", () => applyTheme(DEFAULT_THEME, true));
-    setConnectionStatus("", "Appearance");
 }
+
+if (themeSecondary) {
+    themeSecondary.addEventListener("input", () => {
+        setPendingTheme({
+            primary: pendingPrimary || activeTheme.primary,
+            secondary: themeSecondary.value,
+        });
+    });
+}
+
+applyThemeButton?.addEventListener("click", applyPendingTheme);
+resetThemeButton?.addEventListener("click", resetTheme);
 
 document.addEventListener("keydown", (event) => {
     if (event.key === "Escape") setSidebar(false);

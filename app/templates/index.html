@@ -7,6 +7,7 @@
 
   <title>{{ app_name }} · ER:LC</title>
 
+  <script src="{{ url_for('static', path='/js/theme-init.js') }}"></script>
   <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
 </head>
 
@@ -75,10 +76,12 @@
         </h1>
       </div>
 
-      <div class="status" id="api-status" role="status" aria-live="polite">
-        <span class="status-dot"></span>
-        <span id="status-text">Connecting...</span>
-      </div>
+      {% if active_page != "settings" %}
+        <div class="status" id="api-status" role="status" aria-live="polite">
+          <span class="status-dot"></span>
+          <span id="status-text">Connecting...</span>
+        </div>
+      {% endif %}
     </header>
 
     {% if active_page == "players" %}
@@ -278,82 +281,97 @@
     <section class="settings-card" aria-labelledby="appearance-heading">
       <div class="section-heading">
         <div>
-          <p class="label">appearance</p>
+          <p class="label">Appearance</p>
           <h2 id="appearance-heading">Theme</h2>
           <p class="settings-description">
-            Customize the colors used throughout the control panel.
+            Choose the colors used throughout the interface.
           </p>
         </div>
       </div>
 
       <div class="theme-section">
-        <h3>Color theme</h3>
+        <h3>Preset themes</h3>
 
         <div class="theme-presets">
 
-          <button type="button" class="theme-preset" data-primary="#8fb6a6" data-secondary="#9f8cff"
-            aria-label="Sage and lavender theme">
-            <span style="background:#8fb6a6"></span>
-            <span style="background:#9f8cff"></span>
-            Sage + Lavender
+          <button type="button" class="theme-preset" style="--preset-primary:#8b5cf6" data-primary="#8b5cf6"
+            data-secondary="#ec4899" aria-label="Purple and pink theme" aria-pressed="false">
+            <span class="theme-preset-colors" aria-hidden="true">
+              <span style="background:#8b5cf6"></span>
+              <span style="background:#ec4899"></span>
+            </span>
+            <span class="theme-preset-name">Purple + Pink</span>
           </button>
 
-          <button type="button" class="theme-preset" data-primary="#3b82f6" data-secondary="#06b6d4"
-            aria-label="Blue and cyan theme">
-            <span style="background:#3b82f6"></span>
-            <span style="background:#06b6d4"></span>
-            Blue + Cyan
-          </button>
-          <button type="button" class="theme-preset" data-primary="#ef4444" data-secondary="#f97316"
-            aria-label="Red and orange theme">
-            <span style="background:#ef4444"></span>
-            <span style="background:#f97316"></span>
-            Red + Orange
+          <button type="button" class="theme-preset" style="--preset-primary:#3b82f6" data-primary="#3b82f6"
+            data-secondary="#06b6d4" aria-label="Blue and cyan theme" aria-pressed="false">
+            <span class="theme-preset-colors" aria-hidden="true">
+              <span style="background:#3b82f6"></span>
+              <span style="background:#06b6d4"></span>
+            </span>
+            <span class="theme-preset-name">Blue + Cyan</span>
           </button>
 
-          <button type="button" class="theme-preset" data-primary="#22c55e" data-secondary="#14b8a6"
-            aria-label="Green and teal theme">
-            <span style="background:#22c55e"></span>
-            <span style="background:#14b8a6"></span>
-            Green + Teal
+          <button type="button" class="theme-preset" style="--preset-primary:#ef4444" data-primary="#ef4444"
+            data-secondary="#f97316" aria-label="Red and orange theme" aria-pressed="false">
+            <span class="theme-preset-colors" aria-hidden="true">
+              <span style="background:#ef4444"></span>
+              <span style="background:#f97316"></span>
+            </span>
+            <span class="theme-preset-name">Red + Orange</span>
+          </button>
+
+          <button type="button" class="theme-preset" style="--preset-primary:#22c55e" data-primary="#22c55e"
+            data-secondary="#14b8a6" aria-label="Green and teal theme" aria-pressed="false">
+            <span class="theme-preset-colors" aria-hidden="true">
+              <span style="background:#22c55e"></span>
+              <span style="background:#14b8a6"></span>
+            </span>
+            <span class="theme-preset-name">Green + Teal</span>
           </button>
 
         </div>
       </div>
 
       <div class="theme-section">
-        <h3>Custom colors</h3>
+        <h3>Custom theme</h3>
 
         <div class="custom-theme-colors">
 
-          <label class="color-setting">
-            <span>Primary</span>
+          <div class="color-option">
+            <div class="color-option-copy">
+              <strong>Primary color</strong>
+              <span>Main interface accent</span>
+            </div>
+            <div class="color-picker-control">
+              <input type="color" id="theme-primary" value="#8fb6a6" aria-label="Primary theme color">
+              <code id="theme-primary-value">#8FB6A6</code>
+            </div>
+          </div>
 
-            <input type="color" id="theme-primary" value="#8fb6a6">
-          </label>
-
-          <label class="color-setting">
-            <span>Secondary</span>
-            <input type="color" id="theme-secondary" value="#9f8cff">
-
-          </label>
+          <div class="color-option">
+            <div class="color-option-copy">
+              <strong>Secondary color</strong>
+              <span>Gradient and supporting accent</span>
+            </div>
+            <div class="color-picker-control">
+              <input type="color" id="theme-secondary" value="#9f8cff" aria-label="Secondary theme color">
+              <code id="theme-secondary-value">#9F8CFF</code>
+            </div>
+          </div>
 
         </div>
       </div>
 
-      <div class="theme-preview">
+      <div class="theme-preview" id="theme-preview">
         <p class="label">Preview</p>
-
-        <div class="theme-preview-gradient"></div>
-
-        <button type="button" class="theme-preview-button">
-          Example button
-        </button>
+        <div class="theme-preview-gradient" aria-hidden="true"></div>
       </div>
 
-      <button type="button" id="reset-theme" class="secondary-button">
-        Reset theme
-      </button>
+      <div class="theme-actions">
+        <button id="apply-theme-button" type="button">Apply theme</button>
+        <button type="button" id="reset-theme" class="secondary-button">Reset</button>
+      </div>
     </section>
 
 
