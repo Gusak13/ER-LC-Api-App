@@ -279,176 +279,244 @@
           <p class="settings-description">
             Customize the colors used throughout the control panel.
           </p>
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <h3>Color theme</h3>
+
+        <div class="theme-presets">
+
+          <button type="button" class="theme-preset" data-primary="#8b5cf6" data-secondary="#ec4899"
+            aria-label="Purple and pink theme">
+            <span style="background:#8b5cf6"></span>
+            <span style="background:#ec4899"></span>
+            Purple + Pink
+          </button>
+
+          <button type="button" class="theme-preset" data-primary="#3b92f6" data-secondary="#06b6d4"
+            aria-label="Blue and cyan theme">
+            <span style="background:#3b82f6"></span>
+            <span style="background:#06b6d4"></span>
+            Blue + Cyan
+          </button>
+          <button type="button" class="theme-preset" data-primary="#ef4444" data-secondary="#f97316"
+            aria-label="Red and orange theme">
+            <span style="background:#ef4444"></span>
+            <span style="background:#f97316"></span>
+            Red + Orange
+          </button>
+
+          <button type="button" class="theme-preset" data-primary="#22c55e" data-secondary="#14b8a6"
+            aria-label="Green and teal theme">
+            <span style="background:#22c55e"></span>
+            <span style="background:#14b8a6"></span>
+            Green + Teal
+          </button>
+
+        </div>
+      </div>
+
+      <div class="theme-section">
+        <h3>Custom colors</h3>
+
+        <div class="custom-theme-colors">
+
+          <label class="color-settings">
+            <span>Primary</span>
+
+            <input type="color" id="theme-primary" value="#8b5cf6">
+          </label>
+
+          <label class="color-settings">
+            <span>Secondary</span>
+            <input type="color" id="theme-secondary" value="#ec4899">
+
+          </label>
+
+        </div>
+      </div>
+
+      <div class="theme-preview">
+        <p class="label">Preview</p>
+
+        <div class="theme-preview-gradient"></div>
+
+        <button type="button" class="theme-preview-button">
+          Example button
+        </button>
+      </div>
+
+      <button type="button" id="reset-theme" class="secondary-color">
+        Reset theme
+      </button>
+      </section>
+
+
+      {% else %}
+      <section class="server-card">
+        <div class="server-info">
+          <p class="label">Server name</p>
+          <h2 id="server-name">Loading...</h2>
+
+          <p class="server-meta" id="server-meta">
+            Fetching current server details
+          </p>
+        </div>
+
+        <div class="player-count">
+          <p class="label">Players</p>
+
+          <div class="player-numbers">
+            <span id="current-players">--</span>
+            <span class="separator">/</span>
+            <span id="max-players">--</span>
           </div>
-         </div>
-         
-         <div class="theme-section">
-          <h3>Color theme</h3>
-         <!-- ended here ↑↑↑-->
-          {% else %}
-          <section class="server-card">
-            <div class="server-info">
-              <p class="label">Server name</p>
-              <h2 id="server-name">Loading...</h2>
+        </div>
+      </section>
 
-              <p class="server-meta" id="server-meta">
-                Fetching current server details
-              </p>
+      <section class="dashboard-overview" aria-labelledby="overview-heading">
+        <div class="section-heading dashboard-heading">
+          <div>
+            <p class="label">Operations overview</p>
+            <h2 id="overview-heading">Server at a glance</h2>
+            <p id="dashboard-updated" class="dashboard-updated">Loading live server data...</p>
+          </div>
+          <button type="button" id="refresh-button" class="secondary-button">
+            <span aria-hidden="true">↻</span>
+            Refresh
+          </button>
+        </div>
+
+        <div class="dashboard-stats" aria-label="Live server statistics">
+          <div class="dashboard-stat stat-players">
+            <span>Players online</span>
+            <strong id="dashboard-online">--</strong>
+          </div>
+          <div class="dashboard-stat stat-staff">
+            <span>Staff online</span>
+            <strong id="dashboard-staff-online">--</strong>
+          </div>
+          <div class="dashboard-stat stat-queue">
+            <span>Queue</span>
+            <strong id="dashboard-queue">--</strong>
+          </div>
+          <div class="dashboard-stat stat-calls">
+            <span>Active calls</span>
+            <strong id="dashboard-calls">--</strong>
+          </div>
+          <div class="dashboard-stat stat-vehicles">
+            <span>Vehicles</span>
+            <strong id="dashboard-vehicles">--</strong>
+          </div>
+          <div class="dashboard-stat stat-wanted">
+            <span>Wanted players</span>
+            <strong id="dashboard-wanted">--</strong>
+          </div>
+        </div>
+      </section>
+
+      <div class="dashboard-grid">
+        <section class="dashboard-panel" aria-labelledby="teams-heading">
+          <div class="dashboard-panel-heading">
+            <div>
+              <p class="label">Player distribution</p>
+              <h2 id="teams-heading">Teams online</h2>
             </div>
+            <a class="panel-link" href="/players">Players</a>
+          </div>
+          <div id="dashboard-teams" class="team-breakdown" aria-live="polite">
+            <p class="dashboard-empty">Loading teams...</p>
+          </div>
+        </section>
 
-            <div class="player-count">
-              <p class="label">Players</p>
-
-              <div class="player-numbers">
-                <span id="current-players">--</span>
-                <span class="separator">/</span>
-                <span id="max-players">--</span>
-              </div>
+        <section class="dashboard-panel" aria-labelledby="staff-heading">
+          <div class="dashboard-panel-heading">
+            <div>
+              <p class="label">Live coverage</p>
+              <h2 id="staff-heading">Staff on duty</h2>
             </div>
-          </section>
+          </div>
+          <div id="dashboard-staff" class="dashboard-list" aria-live="polite">
+            <p class="dashboard-empty">Loading staff...</p>
+          </div>
+        </section>
 
-          <section class="dashboard-overview" aria-labelledby="overview-heading">
-            <div class="section-heading dashboard-heading">
-              <div>
-                <p class="label">Operations overview</p>
-                <h2 id="overview-heading">Server at a glance</h2>
-                <p id="dashboard-updated" class="dashboard-updated">Loading live server data...</p>
-              </div>
-              <button type="button" id="refresh-button" class="secondary-button">
-                <span aria-hidden="true">↻</span>
-                Refresh
-              </button>
+        <section class="dashboard-panel dashboard-panel-wide" aria-labelledby="calls-heading">
+          <div class="dashboard-panel-heading">
+            <div>
+              <p class="label">Emergency service</p>
+              <h2 id="calls-heading">Active emergency calls</h2>
             </div>
+          </div>
+          <div id="dashboard-calls-list" class="dashboard-list" aria-live="polite">
+            <p class="dashboard-empty">Loading calls...</p>
+          </div>
+        </section>
 
-            <div class="dashboard-stats" aria-label="Live server statistics">
-              <div class="dashboard-stat stat-players">
-                <span>Players online</span>
-                <strong id="dashboard-online">--</strong>
-              </div>
-              <div class="dashboard-stat stat-staff">
-                <span>Staff online</span>
-                <strong id="dashboard-staff-online">--</strong>
-              </div>
-              <div class="dashboard-stat stat-queue">
-                <span>Queue</span>
-                <strong id="dashboard-queue">--</strong>
-              </div>
-              <div class="dashboard-stat stat-calls">
-                <span>Active calls</span>
-                <strong id="dashboard-calls">--</strong>
-              </div>
-              <div class="dashboard-stat stat-vehicles">
-                <span>Vehicles</span>
-                <strong id="dashboard-vehicles">--</strong>
-              </div>
-              <div class="dashboard-stat stat-wanted">
-                <span>Wanted players</span>
-                <strong id="dashboard-wanted">--</strong>
-              </div>
+        <section class="dashboard-panel" aria-labelledby="vehicles-heading">
+          <div class="dashboard-panel-heading">
+            <div>
+              <p class="label">Server activity</p>
+              <h2 id="vehicles-heading">Spawned vehicles</h2>
             </div>
-          </section>
+          </div>
+          <div id="dashboard-vehicles-list" class="dashboard-list" aria-live="polite">
+            <p class="dashboard-empty">Loading vehicles...</p>
+          </div>
+        </section>
 
-          <div class="dashboard-grid">
-            <section class="dashboard-panel" aria-labelledby="teams-heading">
-              <div class="dashboard-panel-heading">
-                <div>
-                  <p class="label">Player distribution</p>
-                  <h2 id="teams-heading">Teams online</h2>
-                </div>
-                <a class="panel-link" href="/players">Players</a>
-              </div>
-              <div id="dashboard-teams" class="team-breakdown" aria-live="polite">
-                <p class="dashboard-empty">Loading teams...</p>
-              </div>
-            </section>
+        <section class="dashboard-panel" aria-labelledby="queue-heading">
+          <div class="dashboard-panel-heading">
+            <div>
+              <p class="label">Join queue</p>
+              <h2 id="queue-heading">Waiting players</h2>
+            </div>
+          </div>
+          <div id="dashboard-queue-list" class="dashboard-list compact-list" aria-live="polite">
+            <p class="dashboard-empty">Loading queue...</p>
+          </div>
+        </section>
 
-            <section class="dashboard-panel" aria-labelledby="staff-heading">
-              <div class="dashboard-panel-heading">
-                <div>
-                  <p class="label">Live coverage</p>
-                  <h2 id="staff-heading">Staff on duty</h2>
-                </div>
-              </div>
-              <div id="dashboard-staff" class="dashboard-list" aria-live="polite">
-                <p class="dashboard-empty">Loading staff...</p>
-              </div>
-            </section>
+        <section class="dashboard-panel" aria-labelledby="wanted-heading">
+          <div class="dashboard-panel-heading">
+            <div>
+              <p class="label">Player status</p>
+              <h2 id="wanted-heading">Wanted players</h2>
+            </div>
+            <a class="panel-link" href="/map">Map</a>
+          </div>
+          <div id="dashboard-wanted-list" class="dashboard-list compact-list" aria-live="polite">
+            <p class="dashboard-empty">Loading player status...</p>
+          </div>
+        </section>
+      </div>
 
-            <section class="dashboard-panel dashboard-panel-wide" aria-labelledby="calls-heading">
-              <div class="dashboard-panel-heading">
-                <div>
-                  <p class="label">Emergency service</p>
-                  <h2 id="calls-heading">Active emergency calls</h2>
-                </div>
-              </div>
-              <div id="dashboard-calls-list" class="dashboard-list" aria-live="polite">
-                <p class="dashboard-empty">Loading calls...</p>
-              </div>
-            </section>
-
-            <section class="dashboard-panel" aria-labelledby="vehicles-heading">
-              <div class="dashboard-panel-heading">
-                <div>
-                  <p class="label">Server activity</p>
-                  <h2 id="vehicles-heading">Spawned vehicles</h2>
-                </div>
-              </div>
-              <div id="dashboard-vehicles-list" class="dashboard-list" aria-live="polite">
-                <p class="dashboard-empty">Loading vehicles...</p>
-              </div>
-            </section>
-
-            <section class="dashboard-panel" aria-labelledby="queue-heading">
-              <div class="dashboard-panel-heading">
-                <div>
-                  <p class="label">Join queue</p>
-                  <h2 id="queue-heading">Waiting players</h2>
-                </div>
-              </div>
-              <div id="dashboard-queue-list" class="dashboard-list compact-list" aria-live="polite">
-                <p class="dashboard-empty">Loading queue...</p>
-              </div>
-            </section>
-
-            <section class="dashboard-panel" aria-labelledby="wanted-heading">
-              <div class="dashboard-panel-heading">
-                <div>
-                  <p class="label">Player status</p>
-                  <h2 id="wanted-heading">Wanted players</h2>
-                </div>
-                <a class="panel-link" href="/map">Map</a>
-              </div>
-              <div id="dashboard-wanted-list" class="dashboard-list compact-list" aria-live="polite">
-                <p class="dashboard-empty">Loading player status...</p>
-              </div>
-            </section>
+      <section class="command-card" id="command-panel">
+        <div class="section-heading">
+          <div>
+            <p class="label">Virtual server management</p>
+            <h2>Run command</h2>
           </div>
 
-          <section class="command-card" id="command-panel">
-            <div class="section-heading">
-              <div>
-                <p class="label">Virtual server management</p>
-                <h2>Run command</h2>
-              </div>
+        </div>
 
-            </div>
+        <form id="command-form">
+          <label for="command-input">Command</label>
 
-            <form id="command-form">
-              <label for="command-input">Command</label>
+          <div class="command-row">
+            <input id="command-input" name="command" type="text" placeholder=":h Hello everyone!" autocomplete="off"
+              spellcheck="false" required>
 
-              <div class="command-row">
-                <input id="command-input" name="command" type="text" placeholder=":h Hello everyone!" autocomplete="off"
-                  spellcheck="false" required>
+            <button id="command-button" type="submit">
+              Run
+            </button>
+          </div>
+        </form>
 
-                <button id="command-button" type="submit">
-                  Run
-                </button>
-              </div>
-            </form>
-
-            <p id="command-result" class="command-result" role="status" aria-live="polite"></p>
-          </section>
-          {% endif %}
+        <p id="command-result" class="command-result" role="status" aria-live="polite"></p>
+      </section>
+      {% endif %}
   </main>
 
   <script src="{{ url_for('static', path='/js/app.js') }}"></script>
