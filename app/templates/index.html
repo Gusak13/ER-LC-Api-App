@@ -41,6 +41,10 @@
       <a href="/map" class="sidebar-link{% if active_page == 'map' %} active{% endif %}">
         Map
       </a>
+
+      <a href="/settings" class="sidebar-link{% if active_page == 'settings' %} active{% endif %}">
+        Settings
+      </a>
     </nav>
 
     <div class="sidebar-session">
@@ -287,14 +291,14 @@
 
         <div class="theme-presets">
 
-          <button type="button" class="theme-preset" data-primary="#8b5cf6" data-secondary="#ec4899"
-            aria-label="Purple and pink theme">
-            <span style="background:#8b5cf6"></span>
-            <span style="background:#ec4899"></span>
-            Purple + Pink
+          <button type="button" class="theme-preset" data-primary="#8fb6a6" data-secondary="#9f8cff"
+            aria-label="Sage and lavender theme">
+            <span style="background:#8fb6a6"></span>
+            <span style="background:#9f8cff"></span>
+            Sage + Lavender
           </button>
 
-          <button type="button" class="theme-preset" data-primary="#3b92f6" data-secondary="#06b6d4"
+          <button type="button" class="theme-preset" data-primary="#3b82f6" data-secondary="#06b6d4"
             aria-label="Blue and cyan theme">
             <span style="background:#3b82f6"></span>
             <span style="background:#06b6d4"></span>
@@ -322,15 +326,15 @@
 
         <div class="custom-theme-colors">
 
-          <label class="color-settings">
+          <label class="color-setting">
             <span>Primary</span>
 
-            <input type="color" id="theme-primary" value="#8b5cf6">
+            <input type="color" id="theme-primary" value="#8fb6a6">
           </label>
 
-          <label class="color-settings">
+          <label class="color-setting">
             <span>Secondary</span>
-            <input type="color" id="theme-secondary" value="#ec4899">
+            <input type="color" id="theme-secondary" value="#9f8cff">
 
           </label>
 
@@ -347,10 +351,10 @@
         </button>
       </div>
 
-      <button type="button" id="reset-theme" class="secondary-color">
+      <button type="button" id="reset-theme" class="secondary-button">
         Reset theme
       </button>
-      </section>
+    </section>
 
 
       {% else %}

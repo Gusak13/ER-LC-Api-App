@@ -81,6 +81,7 @@ async def security_headers(request: Request, call_next):
         "/commands",
         "/activity",
         "/map",
+        "/settings",
     }:
         response.headers["Cache-Control"] = "no-store"
     if request.url.scheme == "https":
@@ -137,6 +138,11 @@ def activity_page(request: Request):
 @app.get("/map", response_class=HTMLResponse, include_in_schema=False)
 def map_page(request: Request):
     return _protected_page(request, "map")
+
+
+@app.get("/settings", response_class=HTMLResponse, include_in_schema=False)
+def settings_page(request: Request):
+    return _protected_page(request, "settings")
 
 
 @app.get("/health", tags=["health"])

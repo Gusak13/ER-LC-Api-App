@@ -68,6 +68,10 @@ const dashboardVehiclesList = document.querySelector("#dashboard-vehicles-list")
 const dashboardQueueList = document.querySelector("#dashboard-queue-list");
 const dashboardWantedList = document.querySelector("#dashboard-wanted-list");
 const logoutButton = document.querySelector("#logout-button");
+const themePresets = document.querySelectorAll(".theme-preset");
+const themePrimary = document.querySelector("#theme-primary");
+const themeSecondary = document.querySelector("#theme-secondary");
+const resetThemeButton = document.querySelector("#reset-theme");
 
 let selectedModeration = null;
 let allPlayers = [];
@@ -78,6 +82,48 @@ let mapOffsetX = 0;
 let mapOffsetY = 0;
 let mapPanStart = null;
 const MAP_IMAGE_SIZE = 3121;
+const THEME_STORAGE_KEY = "erlc-theme";
+const DEFAULT_THEME = { primary: "#8fb6a6", secondary: "#9f8cff" };
+
+function isHexColor(value) {
+    return /^#[0-9a-f]{6}$/i.test(value);
+}
+
+function readStoredTheme() {
+    try {
+        const stored = JSON.parse(window.localStorage.getItem(THEME_STORAGE_KEY));
+        if (isHexColor(stored?.primary) && isHexColor(stored?.secondary)) return stored;
+    } catch {
+        // Ignore unavailable storage or malformed values and use the default theme.
+    }
+    return DEFAULT_THEME;
+}
+
+function applyTheme(theme, persist = false) {
+    const primary = isHexColor(theme.primary) ? theme.primary.toLowerCase() : DEFAULT_THEME.primary;
+    const secondary = isHexColor(theme.secondary) ? theme.secondary.toLowerCase() : DEFAULT_THEME.secondary;
+
+    document.documentElement.style.setProperty("--primary", primary);
+    document.documentElement.style.setProperty("--secondary", secondary);
+    if (themePrimary) themePrimary.value = primary;
+    if (themeSecondary) themeSecondary.value = secondary;
+
+    themePresets.forEach((preset) => {
+        const selected = preset.dataset.primary?.toLowerCase() === primary
+            && preset.dataset.secondary?.toLowerCase() === secondary;
+        preset.setAttribute("aria-pressed", String(selected));
+    });
+
+    if (persist) {
+        try {
+            window.localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify({ primary, secondary }));
+        } catch {
+            // The theme still applies for this page when storage is unavailable.
+        }
+    }
+}
+
+applyTheme(readStoredTheme());
 
 function setConnectionStatus(state, text) {
     if (!statusElement || !statusText) return;
@@ -1060,6 +1106,25 @@ if (liveMap && refreshMapButton) {
     window.setInterval(() => {
         if (!document.hidden) loadMap();
     }, 2000);
+}
+
+if (themePrimary && themeSecondary) {
+    themePresets.forEach((preset) => {
+        preset.addEventListener("click", () => {
+            applyTheme(
+                { primary: preset.dataset.primary, secondary: preset.dataset.secondary },
+                true
+            );
+        });
+    });
+    themePrimary.addEventListener("input", () => {
+        applyTheme({ primary: themePrimary.value, secondary: themeSecondary.value }, true);
+    });
+    themeSecondary.addEventListener("input", () => {
+        applyTheme({ primary: themePrimary.value, secondary: themeSecondary.value }, true);
+    });
+    resetThemeButton?.addEventListener("click", () => applyTheme(DEFAULT_THEME, true));
+    setConnectionStatus("", "Appearance");
 }
 
 document.addEventListener("keydown", (event) => {

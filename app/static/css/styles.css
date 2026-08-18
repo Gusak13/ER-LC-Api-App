@@ -1651,7 +1651,7 @@ input,
     --primary: #8fb6a6;
     --secondary: #9f8cff;
 
-    --primary-hover: #a4c5b8;
+    --primary-hover: color-mix(in srgb, var(--primary) 84%, white);
 
     --success: #78b893;
     --danger: #d98787;
@@ -1832,7 +1832,8 @@ h2 {
 .activity-card,
 .map-card,
 .dashboard-overview,
-.dashboard-panel {
+.dashboard-panel,
+.settings-card {
     background: var(--card);
     border: 1px solid var(--border);
     border-radius: 11px;
@@ -1843,7 +1844,8 @@ h2 {
 .players-card,
 .activity-card,
 .map-card,
-.command-card {
+.command-card,
+.settings-card {
     padding: 22px;
 }
 
@@ -1923,7 +1925,7 @@ input:focus-visible,
 .activity-toolbar select:focus-visible,
 .map-style:focus-visible {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(143, 182, 166, 0.15);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 15%, transparent);
     outline: none;
 }
 
@@ -1933,7 +1935,7 @@ button {
 }
 
 button:focus-visible {
-    outline-color: rgba(143, 182, 166, 0.35);
+    outline-color: color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
 #command-button {
@@ -2096,7 +2098,140 @@ button:focus-visible {
     border-radius: 9px;
 }
 
- 
+.settings-description {
+    max-width: 580px;
+    margin: 6px 0 0;
+    color: var(--muted);
+    font-size: 13px;
+}
+
+.theme-section {
+    margin-top: 24px;
+}
+
+.theme-section h3 {
+    margin: 0 0 12px;
+    color: var(--text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.theme-presets,
+.custom-theme-colors {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+.theme-preset {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 48px;
+    padding: 11px 12px;
+    background: var(--card-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 550;
+    text-align: left;
+}
+
+.theme-preset:hover {
+    background: #222a26;
+    border-color: #52635a;
+}
+
+.theme-preset[aria-pressed="true"] {
+    background: #242d28;
+    border-color: var(--primary);
+}
+
+.theme-preset span {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 50%;
+}
+
+.custom-theme-colors {
+    gap: 12px;
+}
+
+.color-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 58px;
+    padding: 11px 12px;
+    background: var(--card-light);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.color-setting > span {
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 550;
+}
+
+.color-setting input[type="color"] {
+    width: 42px;
+    height: 32px;
+    flex: 0 0 auto;
+    min-height: 0;
+    padding: 3px;
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.color-setting input[type="color"]::-webkit-color-swatch-wrapper {
+    padding: 0;
+}
+
+.color-setting input[type="color"]::-webkit-color-swatch {
+    border: 0;
+    border-radius: 3px;
+}
+
+.color-setting input[type="color"]::-moz-color-swatch {
+    border: 0;
+    border-radius: 3px;
+}
+
+.theme-preview {
+    margin-top: 24px;
+    padding: 16px;
+    background: var(--card-light);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+}
+
+.theme-preview-gradient {
+    height: 68px;
+    margin: 10px 0 14px;
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    border-radius: 7px;
+}
+
+.theme-preview-button {
+    padding: 9px 13px;
+    background: var(--primary);
+    border-color: transparent;
+    color: #101512;
+}
+
+.theme-preview-button:hover {
+    background: var(--primary-hover);
+}
+
+#reset-theme {
+    margin-top: 18px;
+}
 
 @media (max-width: 900px) {
     .dashboard {
@@ -2145,8 +2280,14 @@ button:focus-visible {
     .map-card,
     .command-card,
     .dashboard-overview,
-    .dashboard-panel {
+    .dashboard-panel,
+    .settings-card {
         padding: 18px;
+    }
+
+    .theme-presets,
+    .custom-theme-colors {
+        grid-template-columns: 1fr;
     }
 
     .dashboard-stats {

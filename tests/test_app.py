@@ -94,6 +94,7 @@ def test_navigation_pages_render_their_expected_controls() -> None:
         commands = client.get("/commands")
         activity = client.get("/activity")
         map_page = client.get("/map")
+        settings = client.get("/settings")
 
     assert commands.status_code == 200
     assert 'id="command-logs-list"' in commands.text
@@ -105,6 +106,9 @@ def test_navigation_pages_render_their_expected_controls() -> None:
     assert 'id="map-style"' in map_page.text
     assert 'id="map-canvas"' in map_page.text
     assert 'id="map-zoom-in"' in map_page.text
+    assert settings.status_code == 200
+    assert 'id="theme-primary"' in settings.text
+    assert 'id="reset-theme"' in settings.text
 
 
 def test_local_map_assets_are_available() -> None:
