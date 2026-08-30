@@ -17,7 +17,7 @@ I built this using Python. It works like this:
 ## How to run
 
 ### 1. Setup Python
-Open PowerShell (if you are on Windows), create a virtual environment so the packages don't mess up your PC, and copy the config file:
+Open PowerShell (if you are on Windows), create a virtual environment, and copy the config file:
 
 ```powershell
 python -m venv .venv
@@ -40,7 +40,7 @@ Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server AP
 ## Security & Settings
 
 * **API Key Safety:** The app only keeps your key in the PC's memory while running. It doesn't save it into cookies or local storage.
-* **Don't share it on the internet:** This is made for home use. Don't host it on a public website, otherwise people could steal your server key and ruin your Roblox server.
+* **Don't share it on the internet:** This is made for home use. Don't host it on a public website, or people could steal your server key and ruin your Roblox server.
 * **Locking commands:** Anyone who opens the webpage can use the commands by default. If you want to block some commands, open the `.env` file and type the allowed ones into `COMMAND_ALLOWLIST` (like: `kick,ban,m`).
 
 ## AI disclaimer
