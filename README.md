@@ -2,7 +2,7 @@
 
 A web control panel for controling an [Emergency Response: Liberty County](https://roblox.com) private server. 
 
-It lets you see the players currently in the server, view their positions on the map, and send commands without having to use the game chat.
+You can see who's currently in the server, where they are on the map, and send commands.
 
 I built this using Python. It works like this:
 * It connects to the Roblox server API to get live data.
@@ -37,11 +37,6 @@ Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server AP
 
 *If you want to open this on your phone while playing on your PC, use `http://<YOUR-PC-IP>:8000` (both devices must be on the same Wi-Fi).*
 
-## Security & Settings
-
-* **API Key Safety:** The app only keeps your key in the PC's memory while running. It doesn't save it into cookies or local storage.
-* **Don't share it on the internet:** This is made for home use. Don't host it on a public website, or people could steal your server key and ruin your Roblox server.
-* **Locking commands:** Anyone who opens the webpage can use the commands by default. If you want to block some commands, open the `.env` file and type the allowed ones into `COMMAND_ALLOWLIST` (like: `kick,ban,m`).
 
 ## AI disclaimer
 
