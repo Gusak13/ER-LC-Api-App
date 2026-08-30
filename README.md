@@ -1,8 +1,8 @@
 # ER:LC Control Panel
 
-A simple web dashboard to manage your [Emergency Response: Liberty County](https://roblox.com) private server. 
+A web control panel for managing an [Emergency Response: Liberty County](https://roblox.com) private server. 
 
-This app gives you a clean webpage to see who is playing, check where they are on the map, and send server commands easily.
+It lets you see the players currently in the server, view their positions on the map, and send commands without having to use the game chat.
 
 I built this using Python. It works like this:
 * It connects to the Roblox server API to get live data.
