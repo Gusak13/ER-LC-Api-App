@@ -2,7 +2,7 @@
 
 A simple web dashboard to manage your [Emergency Response: Liberty County](https://roblox.com) private server. 
 
-Instead of reading raw text from the API, this app gives you a clean webpage to see who is playing, check where they are on the map, and send server commands easily.
+This app gives you a clean webpage to see who is playing, check where they are on the map, and send server commands easily.
 
 I built this using Python. It works like this:
 * It connects to the Roblox server API to get live data.
@@ -11,8 +11,8 @@ I built this using Python. It works like this:
 
 ## How it gets data
 
-* **[ER:LC Private Server API](https://erlc.gg)** – Used to get the live player list, player activity, and to send commands.
-* **Map Images** – The app takes the X/Y coordinates from the API and draws them onto the game map images stored inside the `Maps` folder.
+* **[ER:LC Private Server API](https://erlc.gg)** - Used to get the live player list, player activity, and to send commands.
+* **Map Images** - The app takes the X/Y coordinates from the API and draws them onto the game map images stored inside the `Maps` folder.
 
 ## How to run
 
@@ -45,4 +45,4 @@ Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server AP
 
 ## AI disclaimer
 
-I am still learning, so I used AI to help me understand how things work, debug errors, and help write some parts of the code. I made sure to check everything and tweak it to make it work for this project.
+I am still learning, so I used AI to help me understand how things work, debug errors, and help write some parts of the code. I made sure to check everything and adjust it to make it work for this project.
