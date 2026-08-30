@@ -123,7 +123,9 @@ h1 {
 
 .login-result.error {
     padding: 10px 12px;
-    border: 1px solid #fff;
+    border: 1px solid rgb(255, 153, 0);
+    border-radius: 12px;
+    background-color: red;
 }
 
 @media (max-width: 480px) {
