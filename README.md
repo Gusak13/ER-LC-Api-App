@@ -1,22 +1,23 @@
 # ER:LC Control Panel
 
-A simple web-based dashboard for managing your [Emergency Response: Liberty County](https://www.roblox.com/games/2534724415/Emergency-Response-Liberty-County) private server. 
+A simple web dashboard to manage your [Emergency Response: Liberty County](https://roblox.com) private server. 
 
-Instead of messing with raw API responses, this app gives you a clean UI to track server status, monitor active players, view live player locations on a postal map, and send console commands.
+Instead of reading raw text from the API, this app gives you a clean webpage to see who is playing, check where they are on the map, and send server commands easily.
 
-The project runs as a single FastAPI application split into two parts:
-* **Python Backend** – Handles all heavy lifting, talks directly to the official ER:LC API, and keeps your private server key secure in memory.
-* **Server-Rendered Frontend** – A lightweight, fast web interface that dynamically displays live server metrics and provides interactive admin controls.
+I built this using Python. It works like this:
+* It connects to the Roblox server API to get live data.
+* It shows everything on a nice webpage with buttons to control the server.
+* Your private server key stays safe inside the Python script and never leaks to the browser.
 
-## How it works (Data Resources)
+## How it gets data
 
-* **[ER:LC Private Server API](https://apidocs.erlc.gg/)** – Used as the primary data stream to fetch live player lists, server activity, and to execute remote commands.
-* **Postal Map System** – The app takes coordinates provided by the API and maps them onto the local postal map images stored in the `Maps` folder, allowing you to track players visually.
+* **[ER:LC Private Server API](https://erlc.gg)** – Used to get the live player list, player activity, and to send commands.
+* **Map Images** – The app takes the X/Y coordinates from the API and draws them onto the game map images stored inside the `Maps` folder.
 
 ## How to run
 
-### 1. Setup the environment
-Open your terminal (preferably PowerShell if on Windows), create a Python virtual environment, install all required dependencies, and initialize your local environment file:
+### 1. Setup Python
+Open PowerShell (if you are on Windows), create a virtual environment so the packages don't mess up your PC, and copy the config file:
 
 ```powershell
 python -m venv .venv
@@ -24,24 +25,24 @@ python -m venv .venv
 Copy-Item .env.example .env
 ```
 
-### 2. Start the server
-Run the main script to fire up the FastAPI backend:
+### 2. Start the app
+Run the main Python file to start the web server:
 
 ```powershell
 .\.venv\Scripts\python run.py
 ```
 
-### 3. Access the dashboard
-Once the server is up, open your browser and navigate to `http://127.0.0.1:8000`. You will be prompted to log in using your ER:LC server API key. 
+### 3. Open it in your browser
+Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server API key. 
 
-*Note: If you want to access the control panel from other devices (like your phone or a secondary monitor) on the same local network, use `http://<YOUR-PC-IP>:8000`.*
+*Tip: If you want to open this on your phone while playing on your PC, use `http://<YOUR-PC-IP>:8000` (both devices must be on the same Wi-Fi).*
 
-## Security & Configuration
+## Security & Settings
 
-* **API Key Safety:** The server key is strictly held in the server's volatile memory. It never gets saved to the browser cookies, local storage, or any database. 
-* **Network Warning:** This tool is built strictly for local host or trusted home network deployment. **Do not** expose this application directly to the public internet without proper reverse proxy authentication (like Nginx with Basic Auth).
-* **Command Restricting:** Remote commands are enabled by default. If you want to lock down the dashboard so users can only trigger specific actions, edit the `.env` file and define your limits in the `COMMAND_ALLOWLIST` variable (use a comma-separated list).
+* **API Key Safety:** The app only keeps your key in the PC's memory while running. It doesn't save it into cookies or local storage.
+* **Don't share it on the internet:** This is made for home use. Don't host it on a public website, otherwise people could steal your server key and ruin your Roblox server.
+* **Locking commands:** Anyone who opens the webpage can use the commands by default. If you want to block some commands, open the `.env` file and type the allowed ones into `COMMAND_ALLOWLIST` (like: `kick,ban,m`).
 
 ## AI disclaimer
 
-Used an AI assistant during development to brainstorm logic, debug code blocks, and speed up boilerplate creation. Every line of generated code was manually reviewed, refactored, and tested to ensure it fits the project.
+I am still learning, so I used AI to help me understand how things work, debug errors, and help write some parts of the code. I made sure to check everything and tweak it to make it work for this project.
