@@ -1,6 +1,6 @@
 # ER:LC Control Panel
 
-A web control panel for managing an [Emergency Response: Liberty County](https://roblox.com) private server. 
+A web control panel for controling an [Emergency Response: Liberty County](https://roblox.com) private server. 
 
 It lets you see the players currently in the server, view their positions on the map, and send commands without having to use the game chat.
 
