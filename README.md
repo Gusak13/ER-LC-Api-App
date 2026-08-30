@@ -35,7 +35,7 @@ Run the main Python file to start the web server:
 ### 3. Open it in your browser
 Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server API key. 
 
-*Tip: If you want to open this on your phone while playing on your PC, use `http://<YOUR-PC-IP>:8000` (both devices must be on the same Wi-Fi).*
+*If you want to open this on your phone while playing on your PC, use `http://<YOUR-PC-IP>:8000` (both devices must be on the same Wi-Fi).*
 
 ## Security & Settings
 
@@ -45,4 +45,4 @@ Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server AP
 
 ## AI disclaimer
 
-I am still learning, so I used AI to help me understand how things work, debug errors, and help write some parts of the code. I made sure to check everything and adjust it to make it work for this project.
+I am still learning, so I used AI to help me understand how things work, debug code, and help write some parts of the code. I made sure to check everything and adjust it to make it work for this project.
