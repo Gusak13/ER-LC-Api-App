@@ -17,10 +17,10 @@ I built this using Python. It works like this:
 ## Setup
 
 ### 1. Download the zip
-Go to [Releases](https://github.com/Gusak13/ER-LC-Api-App/releases) download and wxtract the zip
+Download the latest ERLC-Control-Panel.zip from the [Releases](https://github.com/Gusak13/ER-LC-Api-App/releases) page and extract it.
 
 ### 2. Start the app
-Go in the extracted zip and run the ERLC-Control-panel.exe
+Open the extracted ERLC-Control-Panel folder and run ERLC-Control-Panel.exe
 
 ### 3. Open it in your browser
 Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server API key. 
