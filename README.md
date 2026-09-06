@@ -14,23 +14,13 @@ I built this using Python. It works like this:
 * **[ER:LC Private Server API](https://erlc.gg)** - Used to get the live player list, player activity, and to send commands.
 * **Map Images** - The app takes the X/Y coordinates from the API and draws them onto the game map images stored inside the `Maps` folder.
 
-## How to run
+## Setup
 
-### 1. Setup Python
-Open PowerShell (if you are on Windows), create a virtual environment, and copy the config file:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\python -m pip install -r requirements-dev.txt
-Copy-Item .env.example .env
-```
+### 1. Download the zip
+Go to https://github.com/matrndev/hass-wintray/releases, download and wxtract the zip
 
 ### 2. Start the app
-Run the main Python file to start the web server:
-
-```powershell
-.\.venv\Scripts\python run.py
-```
+Go in the extracted zip and run the ERLC-Control-panel.exe
 
 ### 3. Open it in your browser
 Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server API key. 
