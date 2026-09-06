@@ -17,7 +17,7 @@ I built this using Python. It works like this:
 ## Setup
 
 ### 1. Download the zip
-Go to https://github.com/matrndev/hass-wintray/releases, download and wxtract the zip
+Go to [Releases](https://github.com/Gusak13/ER-LC-Api-App/releases) download and wxtract the zip
 
 ### 2. Start the app
 Go in the extracted zip and run the ERLC-Control-panel.exe
