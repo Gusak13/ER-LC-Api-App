@@ -1,9 +1,14 @@
 import os
+import sys
+
 from dataclasses import dataclass
 from functools import lru_cache
 from pathlib import Path
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+if getattr(sys, "frozen", False):
+    PROJECT_ROOT = Path(sys._MEIPASS)
+else:
+    PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _load_env_file(path: Path) -> None:

@@ -17,7 +17,9 @@ from app.routes.commands import router as commands_router
 from app.routes.players import router as players_router
 from app.routes.server import router as server_router
 
-templates = Jinja2Templates(directory=PROJECT_ROOT / "app" / "templates")
+templates = Jinja2Templates(
+    directory=PROJECT_ROOT / "app" / "templates"
+)
 
 
 @asynccontextmanager

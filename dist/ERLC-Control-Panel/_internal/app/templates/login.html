@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | {{ app_name }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/css/login.css') }}">
+</head>
+
+<body class="login-page">
+  <main class="login-shell">
+    <section class="login-card" aria-labelledby="login-title">
+      <h1 id="login-title">Login</h1>
+
+      <form id="login-form" class="login-form">
+        <label for="api-key">API key</label>
+        <input id="api-key" name="api-key" type="password" minlength="8" maxlength="512" autocomplete="off"
+          autocapitalize="none" spellcheck="false" placeholder="Enter your API key" required autofocus>
+        <button id="login-button" type="submit">Log in</button>
+      </form>
+
+      <p id="login-result" class="login-result" role="status" aria-live="polite"></p>
+    </section>
+  </main>
+
+  <script src="{{ url_for('static', path='/js/login.js') }}"></script>
+</body>
+
+</html>
