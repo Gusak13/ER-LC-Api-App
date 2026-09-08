@@ -32,6 +32,4 @@ Go to `http://127.0.0.1:8000` in your browser. Log in using your ER:LC server AP
 
 I am still learning, so I used AI to help me understand how things work, debug code, and help write some parts of the code. I made sure to check everything and adjust it to make it work for this project.
 
-## Demo video
 
-[Video]([https://github.com/Gusak13/ER-LC-Api-App/releases](https://cdn.hackclub.com/01a0534d-da67-7ce8-9073-de64272b5c18/Er-Lc%20Api%20App%20Showcase(1).mp4))
